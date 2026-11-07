@@ -1,0 +1,2542 @@
+[
+  {
+    "id": "snake",
+    "title": "Snake Classic",
+    "category": "arcade",
+    "tags": [
+      "serpent",
+      "classique"
+    ],
+    "url": "games/snake/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐍",
+      "bg": "linear-gradient(135deg,#16a34a,#065f46)",
+      "img": "image/snake.jpg"
+    }
+  },
+  {
+    "id": "2048",
+    "title": "2048",
+    "category": "puzzle",
+    "tags": [
+      "nombres",
+      "tuiles"
+    ],
+    "url": "games/2048/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔢",
+      "bg": "linear-gradient(135deg,#f59e0b,#b45309)",
+      "img": "image/2048.jpg"
+    }
+  },
+  {
+    "id": "memory",
+    "title": "Memory Match",
+    "category": "puzzle",
+    "tags": [
+      "cartes",
+      "paires",
+      "mémoire"
+    ],
+    "url": "games/memory/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🃏",
+      "bg": "linear-gradient(135deg,#ec4899,#7c3aed)",
+      "img": "image/memory.jpg"
+    }
+  },
+  {
+    "id": "tictactoe",
+    "title": "Tic-Tac-Toe vs IA",
+    "category": "board",
+    "tags": [
+      "morpion",
+      "ia"
+    ],
+    "url": "games/tictactoe/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "❌",
+      "bg": "linear-gradient(135deg,#0ea5e9,#1e3a8a)",
+      "img": "image/tictactoe.jpg"
+    }
+  },
+  {
+    "id": "breakout",
+    "title": "Brick Breaker",
+    "category": "arcade",
+    "tags": [
+      "briques",
+      "balle"
+    ],
+    "url": "games/breakout/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🧱",
+      "bg": "linear-gradient(135deg,#ef4444,#7f1d1d)",
+      "img": "image/breakout.jpg"
+    }
+  },
+  {
+    "id": "flappy",
+    "title": "Flappy Wings",
+    "category": "arcade",
+    "tags": [
+      "oiseau"
+    ],
+    "url": "games/flappy/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🐤",
+      "bg": "linear-gradient(135deg,#38bdf8,#0369a1)",
+      "img": "image/flappy.jpg"
+    }
+  },
+  {
+    "id": "pong",
+    "title": "Neon Pong",
+    "category": "arcade",
+    "tags": [
+      "raquette"
+    ],
+    "url": "games/pong/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🏓",
+      "bg": "linear-gradient(135deg,#a855f7,#1e1b4b)",
+      "img": "image/pong.jpg"
+    }
+  },
+  {
+    "id": "invaders",
+    "title": "Star Defender",
+    "category": "arcade",
+    "tags": [
+      "espace",
+      "tir"
+    ],
+    "url": "games/invaders/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "👾",
+      "bg": "linear-gradient(135deg,#22c55e,#052e16)",
+      "img": "image/invaders.jpg"
+    }
+  },
+  {
+    "id": "asteroids",
+    "title": "Rock Blaster",
+    "category": "arcade",
+    "tags": [
+      "espace",
+      "vaisseau"
+    ],
+    "url": "games/asteroids/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "☄️",
+      "bg": "linear-gradient(135deg,#64748b,#0f172a)",
+      "img": "image/asteroids.jpg"
+    }
+  },
+  {
+    "id": "runner",
+    "title": "Desert Runner",
+    "category": "arcade",
+    "tags": [
+      "course",
+      "saut"
+    ],
+    "url": "games/runner/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🌵",
+      "bg": "linear-gradient(135deg,#f59e0b,#78350f)",
+      "img": "image/runner.jpg"
+    }
+  },
+  {
+    "id": "minesweeper",
+    "title": "Démineur",
+    "category": "puzzle",
+    "tags": [
+      "mines"
+    ],
+    "url": "games/minesweeper/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "💣",
+      "bg": "linear-gradient(135deg,#94a3b8,#334155)",
+      "img": "image/minesweeper.jpg"
+    }
+  },
+  {
+    "id": "lightsout",
+    "title": "Lights Out",
+    "category": "puzzle",
+    "tags": [
+      "lumières"
+    ],
+    "url": "games/lightsout/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "💡",
+      "bg": "linear-gradient(135deg,#facc15,#854d0e)",
+      "img": "image/lightsout.jpg"
+    }
+  },
+  {
+    "id": "slide15",
+    "title": "Taquin 15",
+    "category": "puzzle",
+    "tags": [
+      "coulissant"
+    ],
+    "url": "games/slide15/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🔲",
+      "bg": "linear-gradient(135deg,#14b8a6,#134e4a)",
+      "img": "image/slide15.jpg"
+    }
+  },
+  {
+    "id": "connect4",
+    "title": "Puissance 4",
+    "category": "board",
+    "tags": [
+      "ia",
+      "alignement"
+    ],
+    "url": "games/connect4/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🔴",
+      "bg": "linear-gradient(135deg,#3b82f6,#1e3a8a)",
+      "img": "image/connect4.jpg"
+    }
+  },
+  {
+    "id": "blockdrop",
+    "title": "Block Drop",
+    "category": "puzzle",
+    "tags": [
+      "blocs",
+      "lignes"
+    ],
+    "url": "games/blockdrop/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🟦",
+      "bg": "linear-gradient(135deg,#6366f1,#312e81)",
+      "img": "image/blockdrop.jpg"
+    }
+  },
+  {
+    "id": "whack",
+    "title": "Chasse-Taupes",
+    "category": "skill",
+    "tags": [
+      "réflexes"
+    ],
+    "url": "games/whack/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🐹",
+      "bg": "linear-gradient(135deg,#a16207,#422006)",
+      "img": "image/whack.jpg"
+    }
+  },
+  {
+    "id": "clicker",
+    "title": "Gem Clicker",
+    "category": "skill",
+    "tags": [
+      "idle",
+      "clic"
+    ],
+    "url": "games/clicker/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "💎",
+      "bg": "linear-gradient(135deg,#06b6d4,#164e63)",
+      "img": "image/clicker.jpg"
+    }
+  },
+  {
+    "id": "reaction",
+    "title": "Test de Réflexes",
+    "category": "skill",
+    "tags": [
+      "temps de réaction"
+    ],
+    "url": "games/reaction/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "⚡",
+      "bg": "linear-gradient(135deg,#ef4444,#22c55e)",
+      "img": "image/reaction.jpg"
+    }
+  },
+  {
+    "id": "stack",
+    "title": "Stack Tower",
+    "category": "skill",
+    "tags": [
+      "tour",
+      "empiler"
+    ],
+    "url": "games/stack/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🏗️",
+      "bg": "linear-gradient(135deg,#f472b6,#831843)",
+      "img": "image/stack.jpg"
+    }
+  },
+  {
+    "id": "skyhop",
+    "title": "Sky Hop",
+    "category": "arcade",
+    "tags": [
+      "saut",
+      "plateformes"
+    ],
+    "url": "games/skyhop/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🦘",
+      "bg": "linear-gradient(135deg,#84cc16,#14532d)",
+      "img": "image/skyhop.jpg"
+    }
+  },
+  {
+    "id": "lowpoly",
+    "title": "Low Poly Racer",
+    "category": "racing",
+    "tags": [
+      "course",
+      "3d",
+      "low poly"
+    ],
+    "url": "games/lowpoly/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🏎️",
+      "bg": "linear-gradient(135deg,#fb923c,#7c2d12)",
+      "img": "image/lowpoly.jpg"
+    }
+  },
+  {
+    "id": "haunted",
+    "title": "Évasion Maison Hantée",
+    "category": "adventure",
+    "tags": [
+      "horreur",
+      "fantôme",
+      "évasion"
+    ],
+    "url": "games/haunted/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "👻",
+      "bg": "linear-gradient(135deg,#4c1d95,#020617)",
+      "img": "image/haunted.jpg"
+    }
+  },
+  {
+    "id": "hangman",
+    "title": "Pendu",
+    "category": "board",
+    "tags": [
+      "mots"
+    ],
+    "url": "games/hangman/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🔤",
+      "bg": "linear-gradient(135deg,#78716c,#292524)",
+      "img": "image/hangman.jpg"
+    }
+  },
+  {
+    "id": "motsecret",
+    "title": "Mot Secret",
+    "category": "puzzle",
+    "tags": [
+      "mots",
+      "devinette"
+    ],
+    "url": "games/motsecret/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "📝",
+      "bg": "linear-gradient(135deg,#22c55e,#a16207)",
+      "img": "image/motsecret.jpg"
+    }
+  },
+  {
+    "id": "towerdef",
+    "title": "Mini Tower Defense",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/towerdef/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🗼",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)",
+      "img": "image/towerdef.jpg"
+    }
+  },
+  {
+    "id": "retrobowl",
+    "title": "Retrobowl",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/retrobowl/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🏈",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "snowrider",
+    "title": "Snowrider",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/snowrider/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🏂🏾",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "totm",
+    "title": "Totm",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/totm/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🏛️",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "drivemad",
+    "title": "DriveMad",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/drivemad/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🛻",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "subwaydurfer",
+    "title": "Subway Surfer",
+    "category": "skill",
+    "tags": [
+      "tours",
+      "stratégie"
+    ],
+    "url": "games/subwaysurfer/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🚂",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "donkeykong",
+    "title": "Donkey Kong",
+    "category": "arcade",
+    "tags": [
+      "retro",
+      "plateforme"
+    ],
+    "url": "games/donkeykong/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🦍",
+      "bg": "linear-gradient(135deg,#7c2d12,#451a03)"
+    }
+  },
+  {
+    "id": "amongus",
+    "title": "Among Us",
+    "category": "stratégie",
+    "tags": [
+      "survie",
+      "multijoueur"
+    ],
+    "url": "games/amongus/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🚀",
+      "bg": "linear-gradient(135deg,#ef4444,#7f1d1d)"
+    }
+  },
+  {
+    "id": "angrybird",
+    "title": "Angry Birds",
+    "category": "skill",
+    "tags": [
+      "physique",
+      "destruction"
+    ],
+    "url": "games/angrybird/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐦",
+      "bg": "linear-gradient(135deg,#dc2626,#991b1b)"
+    }
+  },
+  {
+    "id": "angrybird2",
+    "title": "Angry Birds 2",
+    "category": "skill",
+    "tags": [
+      "physique",
+      "destruction"
+    ],
+    "url": "games/angrybird2/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "👑",
+      "bg": "linear-gradient(135deg,#b91c1c,#7f1d1d)"
+    }
+  },
+  {
+    "id": "agameoffireandice",
+    "title": "A Dance of Fire and Ice",
+    "category": "rythme",
+    "tags": [
+      "musique",
+      "adresse"
+    ],
+    "url": "games/agameoffireandice/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "☯️",
+      "bg": "linear-gradient(135deg,#3b82f6,#ef4444)"
+    }
+  },
+  {
+    "id": "motox3mspookyland",
+    "title": "Moto X3M Spooky Land",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "halloween"
+    ],
+    "url": "games/motox3mspookyland/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🎃",
+      "bg": "linear-gradient(135deg,#f97316,#7c3aed)"
+    }
+  },
+  {
+    "id": "btts",
+    "title": "Big Tower Tiny Square",
+    "category": "plateforme",
+    "tags": [
+      "adresse",
+      "retro",
+      "precision"
+    ],
+    "url": "games/btts/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🗼",
+      "bg": "linear-gradient(135deg,#ef4444,#3b82f6)"
+    }
+  },
+  {
+    "id": "rooftopsnipers",
+    "title": "Rooftop Snipers",
+    "category": "tir",
+    "tags": [
+      "2-joueurs",
+      "action",
+      "physique"
+    ],
+    "url": "games/rooftopsnipers/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔫",
+      "bg": "linear-gradient(135deg,#6b7280,#111827)"
+    }
+  },
+  {
+    "id": "motox3mm",
+    "title": "Moto X3M",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "cascade"
+    ],
+    "url": "games/motox3mm/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏍️",
+      "bg": "linear-gradient(135deg,#f59e0b,#ef4444)"
+    }
+  },
+  {
+    "id": "motox3mpoolparty",
+    "title": "Moto X3M Pool Party",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "ete"
+    ],
+    "url": "games/motox3mpoolparty/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🦩",
+      "bg": "linear-gradient(135deg,#06b6d4,#ec4899)"
+    }
+  },
+  {
+    "id": "bigflappytowertinysquare",
+    "title": "Big Flappy Tower Tiny Square",
+    "category": "plateforme",
+    "tags": [
+      "adresse",
+      "retro",
+      "vol"
+    ],
+    "url": "games/bigflappytowertinysquare/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🐦",
+      "bg": "linear-gradient(135deg,#10b981,#f59e0b)"
+    }
+  },
+  {
+    "id": "motox3mwinter",
+    "title": "Moto X3M Winter",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "hiver"
+    ],
+    "url": "games/motox3mwinter/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "❄️",
+      "bg": "linear-gradient(135deg,#3b82f6,#93c5fd)"
+    }
+  },
+  {
+    "id": "agariolite",
+    "title": "Agario Lite",
+    "category": "io",
+    "tags": [
+      "multijoueur",
+      "survie",
+      "arcade"
+    ],
+    "url": "games/agariolite/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🟢",
+      "bg": "linear-gradient(135deg,#10b981,#6366f1)"
+    }
+  },
+  {
+    "id": "motox3m3",
+    "title": "Moto X3M 3",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "cascade"
+    ],
+    "url": "games/motox3m3/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🏁",
+      "bg": "linear-gradient(135deg,#f59e0b,#10b981)"
+    }
+  },
+  {
+    "id": "bigneontowertinysquare",
+    "title": "Big Neon Tower Tiny Square",
+    "category": "plateforme",
+    "tags": [
+      "adresse",
+      "retro",
+      "neon"
+    ],
+    "url": "games/bigneontowertinysquare/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "⚡",
+      "bg": "linear-gradient(135deg,#d946ef,#06b6d4)"
+    }
+  },
+  {
+    "id": "asmallworldcup",
+    "title": "A Small World Cup",
+    "category": "sports",
+    "tags": [
+      "football",
+      "2-joueurs",
+      "physique"
+    ],
+    "url": "games/asmallworldcup/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏆",
+      "bg": "linear-gradient(135deg,#f59e0b,#10b981)"
+    }
+  },
+  {
+    "id": "basketrandom",
+    "title": "Basket Random",
+    "category": "sports",
+    "tags": [
+      "basketball",
+      "2-joueurs",
+      "physique"
+    ],
+    "url": "games/basketrandom/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏀",
+      "bg": "linear-gradient(135deg,#f97316,#ef4444)"
+    }
+  },
+  {
+    "id": "motox3m2",
+    "title": "Moto X3M 2",
+    "category": "moto",
+    "tags": [
+      "course",
+      "adresse",
+      "cascade"
+    ],
+    "url": "games/motox3m2/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🏍️",
+      "bg": "linear-gradient(135deg,#ef4444,#6366f1)"
+    }
+  },
+  {
+    "id": "bigicetowertinysquare",
+    "title": "Big Ice Tower Tiny Square",
+    "category": "plateforme",
+    "tags": [
+      "adresse",
+      "retro",
+      "glace"
+    ],
+    "url": "games/bigicetowertinysquare/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🧊",
+      "bg": "linear-gradient(135deg,#60a5fa,#e0f2fe)"
+    }
+  },
+  {
+    "id": "btts2",
+    "title": "Big Tower Tiny Square 2",
+    "category": "plateforme",
+    "tags": [
+      "adresse",
+      "retro",
+      "precision"
+    ],
+    "url": "games/btts2/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🏢",
+      "bg": "linear-gradient(135deg,#3b82f6,#8b5cf6)"
+    }
+  },
+  {
+    "id": "234playergame",
+    "title": "2 3 4 Player Games",
+    "category": "arcade",
+    "tags": [
+      "multijoueur",
+      "mini-jeux",
+      "2-joueurs"
+    ],
+    "url": "games/234playergame/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🎮",
+      "bg": "linear-gradient(135deg,#ec4899,#8b5cf6)"
+    }
+  },
+  {
+    "id": "toiletpaper",
+    "title": "Toilet Paper",
+    "category": "arcade",
+    "tags": [
+      "adresse",
+      "clic",
+      "humour"
+    ],
+    "url": "games/toiletpaper/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🧻",
+      "bg": "linear-gradient(135deg,#f3f4f6,#9ca3af)"
+    }
+  },
+  {
+    "id": "toiletpaper2",
+    "title": "Toilet Paper 2",
+    "category": "arcade",
+    "tags": [
+      "adresse",
+      "clic",
+      "humour"
+    ],
+    "url": "games/toiletpaper2/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🧻",
+      "bg": "linear-gradient(135deg,#e5e7eb,#6b7280)",
+      "img": "image/toiletpaper2.jpg"
+    }
+  },
+  {
+    "id": "drivemadsugarland",
+    "title": "Drive Mad Sugar Land",
+    "category": "voiture",
+    "tags": [
+      "course",
+      "adresse",
+      "physique"
+    ],
+    "url": "games/drivemadsugarland/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🍬",
+      "bg": "linear-gradient(135deg,#ec4899,#f43f5e)"
+    }
+  },
+  {
+    "id": "drivemadwinter",
+    "title": "Drive Mad Winter",
+    "category": "voiture",
+    "tags": [
+      "course",
+      "adresse",
+      "physique"
+    ],
+    "url": "games/drivemadwinter/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "☃️",
+      "bg": "linear-gradient(135deg,#ec4899,#f43f5e)"
+    }
+  },
+  {
+    "id": "cheeserolling",
+    "title": "Cheese Rolling",
+    "category": "arcade",
+    "tags": [
+      "cheese",
+      "rolling"
+    ],
+    "url": "games/cheeserolling/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🧀",
+      "bg": "linear-gradient(135deg,#facc15,#ca8a04)"
+    }
+  },
+  {
+    "id": "basketbattle",
+    "title": "Basket Battle",
+    "category": "sports",
+    "tags": [
+      "basketball",
+      "sports"
+    ],
+    "url": "games/basketbattle/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏀",
+      "bg": "linear-gradient(135deg,#f97316,#c2410c)"
+    }
+  },
+  {
+    "id": "basketbros",
+    "title": "Basket Bros",
+    "category": "sports",
+    "tags": [
+      "basketball",
+      "multiplayer"
+    ],
+    "url": "games/basketbros/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏀",
+      "bg": "linear-gradient(135deg,#ea580c,#9a3412)"
+    }
+  },
+  {
+    "id": "blackjackhhhh",
+    "title": "Blackjack",
+    "category": "casino",
+    "tags": [
+      "cards",
+      "blackjack"
+    ],
+    "url": "games/blackjackhhhh/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🃏",
+      "bg": "linear-gradient(135deg,#16a34a,#065f46)"
+    }
+  },
+  {
+    "id": "blockblast",
+    "title": "Block Blast",
+    "category": "puzzle",
+    "tags": [
+      "blocks",
+      "puzzle"
+    ],
+    "url": "games/blockblast/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🧩",
+      "bg": "linear-gradient(135deg,#3b82f6,#1e40af)"
+    }
+  },
+  {
+    "id": "bunnyland",
+    "title": "Bunny Land",
+    "category": "adventure",
+    "tags": [
+      "bunny",
+      "adventure"
+    ],
+    "url": "games/bunnyland/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🐰",
+      "bg": "linear-gradient(135deg,#f9a8d4,#db2777)"
+    }
+  },
+  {
+    "id": "chessclassic",
+    "title": "Chess Classic",
+    "category": "strategy",
+    "tags": [
+      "chess",
+      "strategy"
+    ],
+    "url": "games/chessclassic/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "♟️",
+      "bg": "linear-gradient(135deg,#64748b,#1e293b)"
+    }
+  },
+  {
+    "id": "choppyorc",
+    "title": "Choppy Orc",
+    "category": "adventure",
+    "tags": [
+      "orc",
+      "platformer"
+    ],
+    "url": "games/choppyorc/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🪓",
+      "bg": "linear-gradient(135deg,#84cc16,#365314)"
+    }
+  },
+  {
+    "id": "cookieclicker",
+    "title": "Cookie Clicker",
+    "category": "idle",
+    "tags": [
+      "cookie",
+      "clicker"
+    ],
+    "url": "games/cookieclicker/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🍪",
+      "bg": "linear-gradient(135deg,#d97706,#78350f)"
+    }
+  },
+  {
+    "id": "crossyroad",
+    "title": "Crossy Road",
+    "category": "arcade",
+    "tags": [
+      "crossing",
+      "traffic"
+    ],
+    "url": "games/crossyroad/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐔",
+      "bg": "linear-gradient(135deg,#22c55e,#15803d)"
+    }
+  },
+  {
+    "id": "tag-",
+    "title": "Tag",
+    "category": "multiplayer",
+    "tags": [
+      "tag",
+      "running"
+    ],
+    "url": "games/tag-/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🏃",
+      "bg": "linear-gradient(135deg,#06b6d4,#0e7490)"
+    }
+  },
+  {
+    "id": "tagcm",
+    "title": "Tag CM",
+    "category": "multiplayer",
+    "tags": [
+      "tag",
+      "multiplayer"
+    ],
+    "url": "games/tagcm/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🤾",
+      "bg": "linear-gradient(135deg,#8b5cf6,#5b21b6)"
+    }
+  },
+  {
+    "id": "tallio",
+    "title": "Tall.io",
+    "category": "arcade",
+    "tags": [
+      "io",
+      "growth"
+    ],
+    "url": "games/tallio/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "📏",
+      "bg": "linear-gradient(135deg,#a855f7,#6b21a8)"
+    }
+  },
+  {
+    "id": "territorialio",
+    "title": "Territorial.io",
+    "category": "strategy",
+    "tags": [
+      "territory",
+      "strategy"
+    ],
+    "url": "games/territorialio/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🌍",
+      "bg": "linear-gradient(135deg,#0ea5e9,#1d4ed8)",
+      "img": "image/territorialio.jpg"
+    }
+  },
+  {
+    "id": "thereisnofile",
+    "title": "There Is No File",
+    "category": "puzzle",
+    "tags": [
+      "mystery",
+      "puzzle"
+    ],
+    "url": "games/thereisnofile/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "📁",
+      "bg": "linear-gradient(135deg,#475569,#0f172a)"
+    }
+  },
+  {
+    "id": "timeshooter2",
+    "title": "Time Shooter 2",
+    "category": "action",
+    "tags": [
+      "shooter",
+      "time"
+    ],
+    "url": "games/timeshooter2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "⏱️",
+      "bg": "linear-gradient(135deg,#ef4444,#991b1b)"
+    }
+  },
+  {
+    "id": "timeshooter3",
+    "title": "Time Shooter 3",
+    "category": "action",
+    "tags": [
+      "shooter",
+      "time"
+    ],
+    "url": "games/timeshooter3/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔫",
+      "bg": "linear-gradient(135deg,#dc2626,#7f1d1d)"
+    }
+  },
+  {
+    "id": "tinyfishing",
+    "title": "Tiny Fishing",
+    "category": "casual",
+    "tags": [
+      "fishing",
+      "relaxing"
+    ],
+    "url": "games/tinyfishing/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🎣",
+      "bg": "linear-gradient(135deg,#38bdf8,#0369a1)"
+    }
+  },
+  {
+    "id": "topspeedracing3d",
+    "title": "Top Speed Racing 3D",
+    "category": "racing",
+    "tags": [
+      "cars",
+      "racing"
+    ],
+    "url": "games/topspeedracing3d/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🏎️",
+      "bg": "linear-gradient(135deg,#f43f5e,#9f1239)"
+    }
+  },
+  {
+    "id": "trafficjam3d",
+    "title": "Traffic Jam 3D",
+    "category": "racing",
+    "tags": [
+      "traffic",
+      "cars"
+    ],
+    "url": "games/trafficjam3d/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🚗",
+      "bg": "linear-gradient(135deg,#f59e0b,#b45309)"
+    }
+  },
+  {
+    "id": "tralalerotralalaescapetungtungtungsahur",
+    "title": "Tralalero Tralala Escape Tung Tung Tung Sahur",
+    "category": "adventure",
+    "tags": [
+      "brainrot",
+      "escape"
+    ],
+    "url": "games/tralalerotralalaescapetungtungtungsahur/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🦈",
+      "bg": "linear-gradient(135deg,#06b6d4,#1e3a8a)"
+    }
+  },
+  {
+    "id": "twoball3d",
+    "title": "Two Ball 3D",
+    "category": "arcade",
+    "tags": [
+      "balls",
+      "3d"
+    ],
+    "url": "games/twoball3d/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "⚽",
+      "bg": "linear-gradient(135deg,#6366f1,#312e81)"
+    }
+  },
+  {
+    "id": "slippyslide",
+    "title": "Slippy Slide",
+    "category": "arcade",
+    "tags": [
+      "滑り",
+      "sliding"
+    ],
+    "url": "games/slippyslide/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "🛝",
+      "bg": "linear-gradient(135deg,#38bdf8,#1d4ed8)",
+      "img": "image/slippyslide.jpg"
+    }
+  },
+  {
+    "id": "taptapshot",
+    "title": "Tap Tap Shot",
+    "category": "sports",
+    "tags": [
+      "basketball"
+    ],
+    "url": "games/taptapshot/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏀",
+      "bg": "linear-gradient(135deg,#ea580c,#9a3412)"
+    }
+  },
+  {
+    "id": "forager",
+    "title": "Forager",
+    "category": "adventure",
+    "tags": [
+      "survival",
+      "crafting",
+      "exploration"
+    ],
+    "url": "games/forager/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🌳",
+      "bg": "linear-gradient(135deg,#65a30d,#166534)"
+    }
+  },
+  {
+    "id": "eagleride",
+    "title": "Eagle Ride",
+    "category": "action",
+    "tags": [
+      "vol",
+      "infini"
+    ],
+    "url": "games/eagleride/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🦅",
+      "bg": "linear-gradient(135deg,#60a5fa,#2563eb)"
+    }
+  },
+  {
+    "id": "egg",
+    "title": "Egg",
+    "category": "clicker",
+    "tags": [
+      "casual",
+      "idle"
+    ],
+    "url": "games/egg/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🥚",
+      "bg": "linear-gradient(135deg,#fef08a,#ca8a04)"
+    }
+  },
+  {
+    "id": "eggycar",
+    "title": "Eggy Car",
+    "category": "driving",
+    "tags": [
+      "physique",
+      "casual"
+    ],
+    "url": "games/eggycar/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🥚🚗",
+      "bg": "linear-gradient(135deg,#fde047,#eab308)"
+    }
+  },
+  {
+    "id": "escaperoad",
+    "title": "Escape Road",
+    "category": "driving",
+    "tags": [
+      "evasion",
+      "action"
+    ],
+    "url": "games/escaperoad/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🚔",
+      "bg": "linear-gradient(135deg,#ef4444,#991b1b)"
+    }
+  },
+  {
+    "id": "fallguys",
+    "title": "Fall Guys",
+    "category": "action",
+    "tags": [
+      "multijoueur",
+      "course"
+    ],
+    "url": "games/fallguys/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👑",
+      "bg": "linear-gradient(135deg,#ec4899,#a21caf)"
+    }
+  },
+  {
+    "id": "feedthevoid",
+    "title": "Feed the Void",
+    "category": "arcade",
+    "tags": [
+      "espace",
+      "casual"
+    ],
+    "url": "games/feedthevoid/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🕳️",
+      "bg": "linear-gradient(135deg,#4b5563,#111827)"
+    }
+  },
+  {
+    "id": "fireboyandwatergirl2",
+    "title": "Fireboy and Watergirl 2",
+    "category": "puzzle",
+    "tags": [
+      "coop",
+      "plateforme"
+    ],
+    "url": "games/fireboyandwatergirl2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔥💧",
+      "bg": "linear-gradient(135deg,#ef4444,#3b82f6)"
+    }
+  },
+  {
+    "id": "fireboyandwatergirl3",
+    "title": "Fireboy and Watergirl 3",
+    "category": "puzzle",
+    "tags": [
+      "coop",
+      "plateforme"
+    ],
+    "url": "games/fireboyandwatergirl3/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔥💧",
+      "bg": "linear-gradient(135deg,#f97316,#06b6d4)"
+    }
+  },
+  {
+    "id": "fisheatgettingbig",
+    "title": "Fish Eat Getting Big",
+    "category": "arcade",
+    "tags": [
+      "multijoueur",
+      "ocean"
+    ],
+    "url": "games/fisheatgettingbig/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🐟",
+      "bg": "linear-gradient(135deg,#38bdf8,#0369a1)"
+    }
+  },
+  {
+    "id": "fisquarium",
+    "title": "Fisquarium",
+    "category": "casual",
+    "tags": [
+      "aquarium",
+      "idle"
+    ],
+    "url": "games/fisquarium/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🐠",
+      "bg": "linear-gradient(135deg,#0ea5e9,#0f766e)"
+    }
+  },
+  {
+    "id": "fivenightsatfrickbears3",
+    "title": "Five Nights at Frickbear's 3",
+    "category": "horror",
+    "tags": [
+      "fnaf",
+      "survie"
+    ],
+    "url": "games/fivenightsatfrickbears3/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🐻",
+      "bg": "linear-gradient(135deg,#78350f,#451a03)"
+    }
+  },
+  {
+    "id": "fluidism",
+    "title": "Fluidism",
+    "category": "puzzle",
+    "tags": [
+      "physique",
+      "casual"
+    ],
+    "url": "games/fluidism/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🌊",
+      "bg": "linear-gradient(135deg,#22d3ee,#0891b2)"
+    }
+  },
+  {
+    "id": "fnac1",
+    "title": "Five Nights at Candy's 1",
+    "category": "horror",
+    "tags": [
+      "fnaf",
+      "survie"
+    ],
+    "url": "games/fnac1/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐱",
+      "bg": "linear-gradient(135deg,#475569,#1e293b)"
+    }
+  },
+  {
+    "id": "FNAF",
+    "title": "Five Nights at Freddy's",
+    "category": "horror",
+    "tags": [
+      "survie",
+      "classique"
+    ],
+    "url": "games/FNAF/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐻",
+      "bg": "linear-gradient(135deg,#b45309,#78350f)"
+    }
+  },
+  {
+    "id": "FNAF2",
+    "title": "Five Nights at Freddy's 2",
+    "category": "horror",
+    "tags": [
+      "survie",
+      "classique"
+    ],
+    "url": "games/FNAF2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐰",
+      "bg": "linear-gradient(135deg,#d97706,#92400e)"
+    }
+  },
+  {
+    "id": "FNAF3",
+    "title": "Five Nights at Freddy's 3",
+    "category": "horror",
+    "tags": [
+      "survie",
+      "classique"
+    ],
+    "url": "games/FNAF3/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🦊",
+      "bg": "linear-gradient(135deg,#854d0e,#451a03)"
+    }
+  },
+  {
+    "id": "FNAF4",
+    "title": "Five Nights at Freddy's 4",
+    "category": "horror",
+    "tags": [
+      "survie",
+      "classique"
+    ],
+    "url": "games/FNAF4/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🚪",
+      "bg": "linear-gradient(135deg,#1f2937,#111827)"
+    }
+  },
+  {
+    "id": "fnaf4halloween",
+    "title": "Five Nights at Freddy's 4: Halloween Edition",
+    "category": "horror",
+    "tags": [
+      "survie",
+      "halloween"
+    ],
+    "url": "games/fnaf4halloween/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🎃",
+      "bg": "linear-gradient(135deg,#ea580c,#7c2d12)"
+    }
+  },
+  {
+    "id": "fnafps",
+    "title": "Freddy Fazbear's Pizzeria Simulator",
+    "category": "horror",
+    "tags": [
+      "gestion",
+      "survie"
+    ],
+    "url": "games/fnafps/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🍕",
+      "bg": "linear-gradient(135deg,#ca8a04,#78350f)"
+    }
+  },
+  {
+    "id": "footballbros",
+    "title": "Football Bros",
+    "category": "sports",
+    "tags": [
+      "football",
+      "multijoueur"
+    ],
+    "url": "games/footballbros/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏈",
+      "bg": "linear-gradient(135deg,#15803d,#14532d)"
+    }
+  },
+  {
+    "id": "fortzone",
+    "title": "Fortzone",
+    "category": "action",
+    "tags": [
+      "tir",
+      "battle-royale"
+    ],
+    "url": "games/fortzone/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "💥",
+      "bg": "linear-gradient(135deg,#4f46e5,#312e81)"
+    }
+  },
+  {
+    "id": "fruitninja",
+    "title": "Fruit Ninja",
+    "category": "arcade",
+    "tags": [
+      "classique",
+      "casual"
+    ],
+    "url": "games/fruitninja/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🍉",
+      "bg": "linear-gradient(135deg,#22c55e,#15803d)"
+    }
+  },
+  {
+    "id": "funnymadracing",
+    "title": "Funny Mad Racing",
+    "category": "driving",
+    "tags": [
+      "physique",
+      "2-joueurs"
+    ],
+    "url": "games/funnymadracing/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🤪🚗",
+      "bg": "linear-gradient(135deg,#eab308,#b45309)"
+    }
+  },
+  {
+    "id": "gdbreeze",
+    "title": "Geometry Dash Breeze",
+    "category": "action",
+    "tags": [
+      "rythme",
+      "plateforme"
+    ],
+    "url": "games/gdbreeze/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🟩",
+      "bg": "linear-gradient(135deg,#06b6d4,#0369a1)"
+    }
+  },
+  {
+    "id": "gdlite",
+    "title": "Geometry Dash Lite",
+    "category": "action",
+    "tags": [
+      "rythme",
+      "plateforme"
+    ],
+    "url": "games/gdlite/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🟩",
+      "bg": "linear-gradient(135deg,#22c55e,#16a34a)"
+    }
+  },
+  {
+    "id": "gdsubzero",
+    "title": "Geometry Dash SubZero",
+    "category": "action",
+    "tags": [
+      "rythme",
+      "plateforme"
+    ],
+    "url": "games/gdsubzero/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🥶🟩",
+      "bg": "linear-gradient(135deg,#38bdf8,#1d4ed8)"
+    }
+  },
+  {
+    "id": "getawayshootoutv2",
+    "title": "Getaway Shootout v2",
+    "category": "action",
+    "tags": [
+      "physique",
+      "2-joueurs"
+    ],
+    "url": "games/getawayshootoutv2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏃‍♂️🔫",
+      "bg": "linear-gradient(135deg,#dc2626,#7f1d1d)"
+    }
+  },
+  {
+    "id": "gettingoverit",
+    "title": "Getting Over It",
+    "category": "action",
+    "tags": [
+      "physique",
+      "rage"
+    ],
+    "url": "games/gettingoverit/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔨🏺",
+      "bg": "linear-gradient(135deg,#4b5563,#1f2937)"
+    }
+  },
+  {
+    "id": "googledino",
+    "title": "Google Dino Game",
+    "category": "arcade",
+    "tags": [
+      "infini",
+      "classique"
+    ],
+    "url": "games/googledino/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🦖",
+      "bg": "linear-gradient(135deg,#9ca3af,#4b5563)",
+      "img": "image/googledino.jpg"
+    }
+  },
+  {
+    "id": "gorillatag",
+    "title": "Gorilla Tag",
+    "category": "action",
+    "tags": [
+      "multijoueur",
+      "parkour"
+    ],
+    "url": "games/gorillatag/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🦍",
+      "bg": "linear-gradient(135deg,#7c2d12,#431407)"
+    }
+  },
+  {
+    "id": "granny3",
+    "title": "Granny 3",
+    "category": "horror",
+    "tags": [
+      "evasion",
+      "survie"
+    ],
+    "url": "games/granny3/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👵🏚️",
+      "bg": "linear-gradient(135deg,#2e1065,#1e1b4b)"
+    }
+  },
+  {
+    "id": "granny22",
+    "title": "Granny: Chapter Two",
+    "category": "horror",
+    "tags": [
+      "evasion",
+      "survie"
+    ],
+    "url": "games/granny22/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👵👴",
+      "bg": "linear-gradient(135deg,#3f3f46,#18181b)"
+    }
+  },
+  {
+    "id": "grannyy",
+    "title": "Granny",
+    "category": "horror",
+    "tags": [
+      "evasion",
+      "survie"
+    ],
+    "url": "games/grannyy/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👵",
+      "bg": "linear-gradient(135deg,#451a03,#1c1917)"
+    }
+  },
+  {
+    "id": "gravity",
+    "title": "Gravity",
+    "category": "puzzle",
+    "tags": [
+      "physique",
+      "espace"
+    ],
+    "url": "games/gravity/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🌌",
+      "bg": "linear-gradient(135deg,#6366f1,#312e81)"
+    }
+  },
+  {
+    "id": "growdenio",
+    "title": "Growdefense.io",
+    "category": "action",
+    "tags": [
+      "defense",
+      "io"
+    ],
+    "url": "games/growdenio/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🏰",
+      "bg": "linear-gradient(135deg,#059669,#064e3b)"
+    }
+  },
+  {
+    "id": "gta3",
+    "title": "Grand Theft Auto III",
+    "category": "action",
+    "tags": [
+      "monde-ouvert",
+      "conduite"
+    ],
+    "url": "games/gta3/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏙️🚗",
+      "bg": "linear-gradient(135deg,#1e3a8a,#0f172a)"
+    }
+  },
+  {
+    "id": "helixjump",
+    "title": "Helix Jump",
+    "category": "arcade",
+    "tags": [
+      "casual",
+      "infini"
+    ],
+    "url": "games/helixjump/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🥎💈",
+      "bg": "linear-gradient(135deg,#f43f5e,#be123c)"
+    }
+  },
+  {
+    "id": "holeio",
+    "title": "Hole.io",
+    "category": "arcade",
+    "tags": [
+      "io",
+      "multijoueur"
+    ],
+    "url": "games/holeio/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🕳️🏙️",
+      "bg": "linear-gradient(135deg,#a855f7,#6b21a8)"
+    }
+  },
+  {
+    "id": "icefishing",
+    "title": "Ice Fishing",
+    "category": "sports",
+    "tags": [
+      "casual",
+      "simulation"
+    ],
+    "url": "games/icefishing/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🎣",
+      "bg": "linear-gradient(135deg,#7dd3fc,#0284c7)"
+    }
+  },
+  {
+    "id": "idlebreakout",
+    "title": "Idle Breakout",
+    "category": "idle",
+    "tags": [
+      "clicker",
+      "arcade"
+    ],
+    "url": "games/idlebreakout/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🧱",
+      "bg": "linear-gradient(135deg,#f43f5e,#9f1239)"
+    }
+  },
+  {
+    "id": "idleminertycoon",
+    "title": "Idle Miner Tycoon",
+    "category": "idle",
+    "tags": [
+      "management",
+      "clicker"
+    ],
+    "url": "games/idleminertycoon/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "⛏️",
+      "bg": "linear-gradient(135deg,#eab308,#854d0e)"
+    }
+  },
+  {
+    "id": "infinitecraft",
+    "title": "Infinite Craft",
+    "category": "puzzle",
+    "tags": [
+      "casual",
+      "crafting"
+    ],
+    "url": "games/infinitecraft/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🗺️",
+      "bg": "linear-gradient(135deg,#a855f7,#4a044e)"
+    }
+  },
+  {
+    "id": "learntofly",
+    "title": "Learn to Fly",
+    "category": "arcade",
+    "tags": [
+      "upgrades",
+      "physics"
+    ],
+    "url": "games/learntofly/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐧",
+      "bg": "linear-gradient(135deg,#38bdf8,#1e3a8a)"
+    }
+  },
+  {
+    "id": "littlealchemy2",
+    "title": "Little Alchemy 2",
+    "category": "puzzle",
+    "tags": [
+      "crafting",
+      "casual"
+    ],
+    "url": "games/littlealchemy2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "⚗️",
+      "bg": "linear-gradient(135deg,#fb923c,#c2410c)"
+    }
+  },
+  {
+    "id": "marbleracer",
+    "title": "Marble Racer",
+    "category": "arcade",
+    "tags": [
+      "physics",
+      "racing"
+    ],
+    "url": "games/marbleracer/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🔮",
+      "bg": "linear-gradient(135deg,#ec4899,#6366f1)"
+    }
+  },
+  {
+    "id": "minecraftpocketedition",
+    "title": "Minecraft Pocket Edition",
+    "category": "adventure",
+    "tags": [
+      "sandbox",
+      "survival"
+    ],
+    "url": "games/minecraftpocketedition/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🟩",
+      "bg": "linear-gradient(135deg,#22c55e,#78350f)"
+    }
+  },
+  {
+    "id": "minecraftshooter",
+    "title": "Minecraft Shooter",
+    "category": "action",
+    "tags": [
+      "shooting",
+      "minecraft"
+    ],
+    "url": "games/minecraftshooter/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏹",
+      "bg": "linear-gradient(135deg,#4b5563,#15803d)"
+    }
+  },
+  {
+    "id": "minesweeperplus",
+    "title": "Minesweeper Plus",
+    "category": "puzzle",
+    "tags": [
+      "classic",
+      "retro"
+    ],
+    "url": "games/minesweeperplus/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "💣",
+      "bg": "linear-gradient(135deg,#9ca3af,#374151)"
+    }
+  },
+  {
+    "id": "osu",
+    "title": "Osu!",
+    "category": "arcade",
+    "tags": [
+      "rhythm",
+      "music"
+    ],
+    "url": "games/osu/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🎯",
+      "bg": "linear-gradient(135deg,#f472b6,#db2777)"
+    }
+  },
+  {
+    "id": "ovo2",
+    "title": "OvO 2",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "parkour"
+    ],
+    "url": "games/ovo2/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏃",
+      "bg": "linear-gradient(135deg,#6b7280,#111827)"
+    }
+  },
+  {
+    "id": "ovodimensions",
+    "title": "OvO Dimensions",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "parkour"
+    ],
+    "url": "games/ovodimensions/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🌀",
+      "bg": "linear-gradient(135deg,#3b82f6,#1d4ed8)"
+    }
+  },
+  {
+    "id": "ovofixed",
+    "title": "OvO (Fixed)",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "parkour"
+    ],
+    "url": "games/ovofixed/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🕴️",
+      "bg": "linear-gradient(135deg,#4b5563,#1f2937)"
+    }
+  },
+  {
+    "id": "paperio",
+    "title": "Paper.io",
+    "category": "action",
+    "tags": [
+      "io",
+      "multiplayer"
+    ],
+    "url": "games/paperio/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🟪",
+      "bg": "linear-gradient(135deg,#a855f7,#6b21a8)"
+    }
+  },
+  {
+    "id": "paperio3d",
+    "title": "Paper.io 3D",
+    "category": "action",
+    "tags": [
+      "io",
+      "multiplayer"
+    ],
+    "url": "games/paperio3d/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "📦",
+      "bg": "linear-gradient(135deg,#ec4899,#be123c)"
+    }
+  },
+  {
+    "id": "parkingfury",
+    "title": "Parking Fury",
+    "category": "driving",
+    "tags": [
+      "puzzle",
+      "casual"
+    ],
+    "url": "games/parkingfury/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🅿️",
+      "bg": "linear-gradient(135deg,#ef4444,#1e3a8a)"
+    }
+  },
+  {
+    "id": "pixelshooter",
+    "title": "Pixel Shooter",
+    "category": "action",
+    "tags": [
+      "shooting",
+      "pixel"
+    ],
+    "url": "games/pixelshooter/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👾",
+      "bg": "linear-gradient(135deg,#10b981,#064e3b)"
+    }
+  },
+  {
+    "id": "polyold",
+    "title": "Poly Old",
+    "category": "arcade",
+    "tags": [
+      "retro",
+      "casual"
+    ],
+    "url": "games/polyold/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "📐",
+      "bg": "linear-gradient(135deg,#9ca3af,#4b5563)"
+    }
+  },
+  {
+    "id": "polytrackworksnow",
+    "title": "PolyTrack (Working)",
+    "category": "driving",
+    "tags": [
+      "racing",
+      "physics"
+    ],
+    "url": "games/polytrackworksnow/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏎️",
+      "bg": "linear-gradient(135deg,#f97316,#b91c1c)"
+    }
+  },
+  {
+    "id": "portal2d",
+    "title": "Portal 2D",
+    "category": "puzzle",
+    "tags": [
+      "platformer",
+      "sci-fi"
+    ],
+    "url": "games/portal2d/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🔵",
+      "bg": "linear-gradient(135deg,#06b6d4,#f97316)"
+    }
+  },
+  {
+    "id": "pvz2gardenless",
+    "title": "PvZ 2: Gardenless",
+    "category": "strategy",
+    "tags": [
+      "defense",
+      "zombies"
+    ],
+    "url": "games/pvz2gardenless/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🧠",
+      "bg": "linear-gradient(135deg,#84cc16,#15803d)"
+    }
+  },
+  {
+    "id": "realflightsim",
+    "title": "Real Flight Simulator",
+    "category": "casual",
+    "tags": [
+      "simulation",
+      "flying"
+    ],
+    "url": "games/realflightsim/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "✈️",
+      "bg": "linear-gradient(135deg,#38bdf8,#0369a1)"
+    }
+  },
+  {
+    "id": "residentevil",
+    "title": "Resident Evil",
+    "category": "horror",
+    "tags": [
+      "survival",
+      "action"
+    ],
+    "url": "games/residentevil/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "👁️‍🗨️",
+      "bg": "linear-gradient(135deg,#dc2626,#450a0a)"
+    }
+  },
+  {
+    "id": "retrobowlcollege",
+    "title": "Retro Bowl College",
+    "category": "sports",
+    "tags": [
+      "football",
+      "retro"
+    ],
+    "url": "games/retrobowlcollege/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏈",
+      "bg": "linear-gradient(135deg,#b45309,#7c2d12)"
+    }
+  },
+  {
+    "id": "slitherio",
+    "title": "Slither.io",
+    "category": "action",
+    "tags": [
+      "io",
+      "multiplayer"
+    ],
+    "url": "games/slitherio/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🐍",
+      "bg": "linear-gradient(135deg,#22c55e,#a855f7)"
+    }
+  },
+  {
+    "id": "smashkartsworking",
+    "title": "Smash Karts (Working)",
+    "category": "driving",
+    "tags": [
+      "multiplayer",
+      "action"
+    ],
+    "url": "games/smashkartsworking/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🛒",
+      "bg": "linear-gradient(135deg,#f43f5e,#65a30d)"
+    }
+  },
+  {
+    "id": "stickmanandguns",
+    "title": "Stickman and Guns",
+    "category": "action",
+    "tags": [
+      "shooting",
+      "stickman"
+    ],
+    "url": "games/stickmanandguns/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🕴️",
+      "bg": "linear-gradient(135deg,#6b7280,#374151)"
+    }
+  },
+  {
+    "id": "subwaysurfersberlin",
+    "title": "Subway Surfers: Berlin",
+    "category": "action",
+    "tags": [
+      "runner",
+      "classic"
+    ],
+    "url": "games/subwaysurfersberlin/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🏃",
+      "bg": "linear-gradient(135deg,#eab308,#db2777)"
+    }
+  },
+  {
+    "id": "supermariobros",
+    "title": "Super Mario Bros",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "classic"
+    ],
+    "url": "games/supermariobros/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🍄",
+      "bg": "linear-gradient(135deg,#ef4444,#3b82f6)"
+    }
+  },
+  {
+    "id": "supitdept",
+    "title": "Super IT Dept",
+    "category": "puzzle",
+    "tags": [
+      "simulation",
+      "casual"
+    ],
+    "url": "games/supitdept/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🖥️",
+      "bg": "linear-gradient(135deg,#4b5563,#1e2937)"
+    }
+  },
+  {
+    "id": "undertale2",
+    "title": "Undertale 2",
+    "category": "adventure",
+    "tags": [
+      "rpg",
+      "retro"
+    ],
+    "url": "games/undertale2/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "💀",
+      "bg": "linear-gradient(135deg,#111827,#f43f5e)"
+    }
+  },
+  {
+    "id": "uno",
+    "title": "Uno",
+    "category": "puzzle",
+    "tags": [
+      "card",
+      "multiplayer"
+    ],
+    "url": "games/uno/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🃏",
+      "bg": "linear-gradient(135deg,#22c55e,#ef4444)"
+    }
+  },
+  {
+    "id": "wordle",
+    "title": "Wordle",
+    "category": "puzzle",
+    "tags": [
+      "word",
+      "casual"
+    ],
+    "url": "games/wordle/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "📝",
+      "bg": "linear-gradient(135deg,#22c55e,#6b7280)"
+    }
+  },
+  {
+    "id": "gta",
+    "title": "GTA",
+    "category": "action",
+    "tags": [
+      "open-world",
+      "driving"
+    ],
+    "url": "games/gta/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "🚗",
+      "bg": "linear-gradient(135deg,#ef4444,#1e3a8a)"
+    }
+  },
+  {
+    "id": "gta22",
+    "title": "GTA 2",
+    "category": "action",
+    "tags": [
+      "open-world",
+      "retro"
+    ],
+    "url": "games/gta22/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🔫",
+      "bg": "linear-gradient(135deg,#4b5563,#111827)"
+    }
+  },
+  {
+    "id": "notsupermarioworld",
+    "title": "Not Super Mario World",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "parody"
+    ],
+    "url": "games/notsupermarioworld/index.html",
+    "popular": false,
+    "new": false,
+    "thumb": {
+      "emoji": "🍄",
+      "bg": "linear-gradient(135deg,#dc2626,#15803d)"
+    }
+  },
+  {
+    "id": "pixelspeedrun",
+    "title": "Pixel Speedrun",
+    "category": "action",
+    "tags": [
+      "platformer",
+      "speedrun"
+    ],
+    "url": "games/pixelspeedrun/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+      "emoji": "⏱️",
+      "bg": "linear-gradient(135deg,#f97316,#7c2d12)"
+    }
+  }
+]
