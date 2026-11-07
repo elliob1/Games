@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>2048</title>
+<style>
+html,body{margin:0;height:100%;background:#1c1408;color:#fef3c7;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+#hud{display:flex;gap:20px;align-items:center;margin-bottom:12px;font-size:18px}
+#g{display:grid;grid-template-columns:repeat(4,80px);grid-gap:8px;padding:8px;background:#44290a;border-radius:10px}
+.t{width:80px;height:80px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;background:#5c3a10;color:#fff}
+button{padding:8px 18px;border:0;border-radius:8px;background:#f59e0b;color:#1c1408;font-weight:700;cursor:pointer}
+small{margin-top:10px;opacity:.7}
+#msg{height:24px;margin-top:8px;font-weight:700}
+</style></head><body>
+<div id="hud"><span>Score : <b id="s">0</b></span><span>Record : <b id="b">0</b></span><button id="r">Nouvelle partie</button></div>
+<div id="g"></div><div id="msg"></div>
+<small>Flèches / WASD ou glisse sur l'écran</small>
+<script>
+var COL={0:'#5c3a10',2:'#a16207',4:'#b45309',8:'#ea580c',16:'#dc2626',32:'#be123c',64:'#9d174d',128:'#a21caf',256:'#7e22ce',512:'#6d28d9',1024:'#4f46e5',2048:'#0891b2'};
+var grid,score,best=+localStorage.getItem('pz_2048')||0,won;
+var g=document.getElementById('g');
+document.getElementById('b').textContent=best;
+function empty(){var e=[];for(var r=0;r<4;r++)for(var c=0;c<4;c++)if(!grid[r][c])e.push([r,c]);return e}
+function spawn(){var e=empty();if(!e.length)return;var p=e[Math.floor(Math.random()*e.length)];grid[p[0]][p[1]]=Math.random()<.9?2:4}
+function start(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];score=0;won=false;spawn();spawn();document.getElementById('msg').textContent='';draw()}
+function draw(){
+  g.innerHTML='';
+  for(var r=0;r<4;r++)for(var c=0;c<4;c++){var v=grid[r][c],d=document.createElement('div');d.className='t';d.style.background=COL[v]||'#0e7490';d.style.fontSize=v>=1024?'22px':'28px';d.textContent=v||'';g.appendChild(d)}
+  document.getElementById('s').textContent=score;
+  if(score>best){best=score;localStorage.setItem('pz_2048',best);document.getElementById('b').textContent=best}
+}
+function slide(row){
+  var a=row.filter(Boolean),out=[],i=0;
+  while(i<a.length){if(a[i]==a[i+1]){out.push(a[i]*2);score+=a[i]*2;i+=2}else{out.push(a[i]);i++}}
+  while(out.length<4)out.push(0);return out;
+}
+function move(d){
+  var before=JSON.stringify(grid),r,c,line;
+  for(var i=0;i<4;i++){
+    if(d=='L'||d=='R'){line=grid[i].slice();if(d=='R')line.reverse();line=slide(line);if(d=='R')line.reverse();grid[i]=line}
+    else{line=[];for(r=0;r<4;r++)line.push(grid[r][i]);if(d=='D')line.reverse();line=slide(line);if(d=='D')line.reverse();for(r=0;r<4;r++)grid[r][i]=line[r]}
+  }
+  if(JSON.stringify(grid)==before)return;
+  spawn();draw();
+  var flat=[].concat.apply([],grid);
+  if(!won&&flat.indexOf(2048)>-1){won=true;document.getElementById('msg').textContent='🎉 2048 atteint ! Continue !'}
+  else if(!canMove())document.getElementById('msg').textContent='Partie terminée';
+}
+function canMove(){
+  if(empty().length)return true;
+  for(var r=0;r<4;r++)for(var c=0;c<4;c++){if(c<3&&grid[r][c]==grid[r][c+1])return true;if(r<3&&grid[r][c]==grid[r+1][c])return true}
+  return false;
+}
+document.addEventListener('keydown',function(e){
+  var m={ArrowLeft:'L',a:'L',ArrowRight:'R',d:'R',ArrowUp:'U',w:'U',ArrowDown:'D',s:'D'}[e.key];
+  if(m){e.preventDefault();move(m)}
+});
+var tx,ty;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)<20&&Math.abs(dy)<20)return;
+  if(Math.abs(dx)>Math.abs(dy))move(dx>0?'R':'L');else move(dy>0?'D':'U');
+},{passive:true});
+document.getElementById('r').onclick=start;
+start();
+</script></body></html>
