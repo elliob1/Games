@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Stack Tower</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:#0d0c16;color:#eee;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px;user-select:none;touch-action:manipulation}
+h1{margin:0;font-size:clamp(1.3rem,5vw,1.8rem);color:#ff9f6b}
+.hud{display:flex;gap:20px}.hud b{color:#7bf1a8}
+canvas{height:min(72vh,600px);aspect-ratio:2/3;max-width:94vw;background:linear-gradient(#1b1740,#0d0c16);border-radius:12px;cursor:pointer;touch-action:none}
+button{background:#ff9f6b;color:#222;border:0;border-radius:10px;padding:9px 24px;font-size:1.05rem;font-weight:700;cursor:pointer}
+</style></head><body>
+<h1>🧱 Stack Tower</h1>
+<div class="hud"><span>Score : <b id="s">0</b></span><span>Record : <b id="r">0</b></span></div>
+<canvas id="c" width="400" height="600"></canvas>
+<button id="re">Rejouer</button>
+<script>
+const K='pz_stack_best',cv=document.getElementById('c'),g=cv.getContext('2d'),W=400,H=600,BH=26;
+let tower,cur,dir,speed,cam,over,started,score,best=0;
+try{best=+localStorage.getItem(K)||0}catch(e){}
+document.getElementById('r').textContent=best;
+const col=i=>'hsl('+((i*11)%360)+',70%,58%)';
+function reset(){
+  tower=[{x:100,w:200}];score=0;over=false;started=false;cam=0;speed=2.2;dir=1;
+  nb();document.getElementById('s').textContent=0;
+}
+function nb(){const t=tower[tower.length-1];cur={x:dir>0?-t.w:W,w:t.w}}
+function drop(){
+  if(over){return}
+  started=true;
+  const t=tower[tower.length-1];
+  let l=Math.max(cur.x,t.x),r=Math.min(cur.x+cur.w,t.x+t.w),w=r-l;
+  if(w<=0){over=true;if(score>best){best=score;try{localStorage.setItem(K,best)}catch(e){}document.getElementById('r').textContent=best}return}
+  if(Math.abs(cur.x-t.x)<5){l=t.x;w=t.w}
+  tower.push({x:l,w:w});score++;
+  document.getElementById('s').textContent=score;
+  speed=Math.min(7,2.2+score*0.12);
+  dir=-dir;nb();
+}
+function frame(){
+  if(!over){cur.x+=speed*dir;
+    if(cur.x+cur.w>W+60||cur.x<-60){dir=-dir;cur.x+=speed*dir}}
+  const target=Math.max(0,(tower.length-9)*BH);cam+=(target-cam)*0.1;
+  g.clearRect(0,0,W,H);
+  const Y=i=>H-(i+1)*BH+cam;
+  tower.forEach((b,i)=>{g.fillStyle=col(i);g.fillRect(b.x,Y(i),b.w,BH-2)});
+  if(!over){g.fillStyle=col(tower.length);g.fillRect(cur.x,Y(tower.length),cur.w,BH-2)}
+  g.fillStyle='#fff';g.font='bold 54px system-ui';g.textAlign='center';g.fillText(score,W/2,70);
+  if(!started&&!over){g.font='18px system-ui';g.fillStyle='#bbb';g.fillText('Clic / Espace pour poser le bloc',W/2,110)}
+  if(over){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,H/2-70,W,130);g.fillStyle='#fff';g.font='bold 34px system-ui';
+    g.fillText('Game over',W/2,H/2-15);g.font='20px system-ui';g.fillText('Score : '+score+(score&&score>=best?' (record !)':''),W/2,H/2+25)}
+  requestAnimationFrame(frame);
+}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();drop()});
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();if(!e.repeat)drop()}});
+document.getElementById('re').onclick=e=>{reset();e.target.blur()};
+reset();frame();
+</script></body></html>

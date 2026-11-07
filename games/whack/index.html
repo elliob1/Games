@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Chasse-Taupes</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#2b2147,#12101c 70%);color:#eee;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:12px;user-select:none;touch-action:manipulation}
+h1{margin:0;font-size:clamp(1.4rem,5vw,2.2rem);color:#ffd166}
+.hud{display:flex;gap:18px;font-size:1.1rem;flex-wrap:wrap;justify-content:center}
+.hud b{color:#7bf1a8}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,3vw,18px);width:min(92vw,420px)}
+.hole{aspect-ratio:1;border-radius:50%;background:radial-gradient(ellipse at 50% 60%,#000 40%,#3a2a1a 41%,#5a4128);position:relative;overflow:hidden;cursor:pointer;border:0;padding:0}
+.c{position:absolute;left:0;right:0;bottom:-100%;text-align:center;font-size:clamp(2.4rem,12vw,4.5rem);transition:bottom .12s;line-height:1}
+.hole.up .c{bottom:12%}
+.hole.hit .c{filter:brightness(2) hue-rotate(90deg)}
+button.play{background:#ffd166;color:#222;border:0;border-radius:10px;padding:10px 26px;font-size:1.1rem;font-weight:700;cursor:pointer}
+#msg{min-height:1.4em;color:#ff9fb2}
+</style></head><body>
+<h1>🕳️ Chasse-Taupes</h1>
+<div class="hud"><span>Score : <b id="s">0</b></span><span>Temps : <b id="t">30</b>s</span><span>Record : <b id="r">0</b></span></div>
+<div id="grid"></div>
+<div id="msg">Appuie sur Jouer !</div>
+<button class="play" id="go">Jouer</button>
+<script>
+const K='pz_whack_best',CR=['🐹','👾','🦔','🐸','🦝','🐭'];
+const $=id=>document.getElementById(id);
+let score=0,left=30,run=false,start=0,timers=[],best=0;
+try{best=+localStorage.getItem(K)||0}catch(e){}
+$('r').textContent=best;
+const holes=[];
+for(let i=0;i<9;i++){
+  const h=document.createElement('button');h.className='hole';h.setAttribute('aria-label','Trou '+(i+1));
+  h.innerHTML='<div class="c"></div>';h._t=0;
+  h.addEventListener('pointerdown',e=>{e.preventDefault();hit(h)});
+  $('grid').appendChild(h);holes.push(h);
+}
+function hit(h){
+  if(!run||!h.classList.contains('up'))return;
+  clearTimeout(h._t);h.classList.add('hit');h.classList.remove('up');
+  setTimeout(()=>h.classList.remove('hit'),150);
+  score++;$('s').textContent=score;
+}
+function spawn(){
+  if(!run)return;
+  const el=(performance.now()-start)/1000;
+  const free=holes.filter(h=>!h.classList.contains('up'));
+  if(free.length){
+    const h=free[Math.floor(Math.random()*free.length)];
+    h.firstChild.textContent=CR[Math.floor(Math.random()*CR.length)];
+    h.classList.add('up');
+    h._t=setTimeout(()=>h.classList.remove('up'),Math.max(420,1100-el*22));
+  }
+  setTimeout(spawn,Math.max(260,850-el*18)*(0.7+Math.random()*0.6));
+}
+function end(){
+  run=false;clearInterval(timers[0]);holes.forEach(h=>{clearTimeout(h._t);h.classList.remove('up')});
+  let m='Terminé ! Score : '+score;
+  if(score>best){best=score;try{localStorage.setItem(K,best)}catch(e){}$('r').textContent=best;m+=' — Nouveau record !'}
+  $('msg').textContent=m;$('go').textContent='Rejouer';
+}
+$('go').onclick=()=>{
+  clearInterval(timers[0]);holes.forEach(h=>{clearTimeout(h._t);h.classList.remove('up')});
+  score=0;left=30;run=true;start=performance.now();
+  $('s').textContent=0;$('t').textContent=30;$('msg').textContent='Vas-y !';
+  timers[0]=setInterval(()=>{left--;$('t').textContent=left;if(left<=0)end()},1000);
+  spawn();
+};
+</script></body></html>

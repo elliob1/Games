@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mini Tower Defense</title>
+<style>
+html,body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;text-align:center}
+h1{font-size:20px;margin:8px 0 2px}
+canvas{max-width:96vw;height:auto;background:#161b22;border:2px solid #30363d;border-radius:8px;display:block;margin:6px auto;touch-action:manipulation}
+#ui{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px}
+button{background:#21262d;color:#e6edf3;border:2px solid #30363d;border-radius:8px;padding:8px 12px;font-size:14px}
+button.sel{border-color:#58a6ff;background:#1c2d4a}
+#go{background:#238636;border-color:#238636}
+p{font-size:13px;color:#8b949e;margin:4px 8px}
+</style></head><body>
+<h1>Mini Tower Defense</h1>
+<canvas id="c" width="640" height="400"></canvas>
+<div id="ui"></div>
+<p>Choisis une tourelle (1/2/3), clique sur une case libre pour la poser. Clique sur une tourelle pour la revendre (60 %). Espace : lancer la vague.</p>
+<script>
+const cv=document.getElementById('c'),g=cv.getContext('2d'),W=640,H=400,TS=40,GW=16,GH=10,WAVES=10;
+const PATH=[[0,2],[12,2],[12,5],[3,5],[3,8],[15,8]];
+const wp=PATH.map(p=>[p[0]*TS+TS/2,p[1]*TS+TS/2]);
+const road=new Set();
+for(let i=0;i<PATH.length-1;i++){const[a,b]=[PATH[i],PATH[i+1]],n=Math.max(Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]));
+ for(let k=0;k<=n;k++)road.add((a[0]+Math.sign(b[0]-a[0])*k)+','+(a[1]+Math.sign(b[1]-a[1])*k))}
+const TYPES=[{n:'Canon',c:50,r:100,d:12,f:.55,col:'#58a6ff'},{n:'Rapide',c:70,r:80,d:4,f:.2,col:'#3fb950'},{n:'Sniper',c:120,r:180,d:40,f:1.4,col:'#d29922'}];
+let gold,lives,wave,state,enemies,towers,bullets,spawn,sel=0,hover=null,best=0,flash=[];
+try{best=+localStorage.getItem('pz_towerdef')||0}catch(e){}
+const ui=document.getElementById('ui');
+TYPES.forEach((t,i)=>{const b=document.createElement('button');b.id='t'+i;b.textContent=(i+1)+'. '+t.n+' ('+t.c+' or)';b.onclick=()=>pick(i);ui.appendChild(b)});
+const go=document.createElement('button');go.id='go';go.onclick=()=>action();ui.appendChild(go);
+function pick(i){sel=i;TYPES.forEach((_,j)=>document.getElementById('t'+j).classList.toggle('sel',j==i))}
+function reset(){gold=150;lives=15;wave=0;state='build';enemies=[];towers=[];bullets=[];spawn=null;pick(0);label()}
+function label(){go.textContent=state=='build'?'Lancer la vague '+(wave+1)+'/'+WAVES:state=='wave'?'Vague '+wave+' en cours...':'Rejouer'}
+function action(){if(state=='build')startWave();else if(state=='win'||state=='lose')reset()}
+function startWave(){wave++;state='wave';const w=wave;spawn={left:6+2*w,t:0,i:0,w};label()}
+function mk(i,w){const hp=20*Math.pow(1.24,w-1);
+ if(i%5==4)return{hp:hp*3,mx:hp*3,sp:32,k:'sq',rw:3+w,lv:2};
+ if(i%3==2)return{hp:hp*.6,mx:hp*.6,sp:80,k:'tri',rw:3+w,lv:1};
+ return{hp,mx:hp,sp:50,k:'cir',rw:3+w,lv:1}}
+function end(win){state=win?'win':'lose';if(win&&lives>best){best=lives;try{localStorage.setItem('pz_towerdef',best)}catch(e){}}label()}
+function update(dt){
+ if(state=='wave'||state=='build'){
+  if(spawn){spawn.t-=dt;if(spawn.t<=0&&spawn.left>0){const e=mk(spawn.i++,spawn.w);e.x=wp[0][0];e.y=wp[0][1];e.s=1;e.slow=0;enemies.push(e);spawn.left--;spawn.t=.8}
+   if(spawn.left<=0)spawn=null}
+  for(const e of enemies){let m=e.sp*dt;while(m>0&&e.s<wp.length){const t=wp[e.s],d=Math.hypot(t[0]-e.x,t[1]-e.y);if(d<=m){e.x=t[0];e.y=t[1];e.s++;m-=d}else{e.x+=(t[0]-e.x)/d*m;e.y+=(t[1]-e.y)/d*m;m=0}}
+   if(e.s>=wp.length){e.done=1;lives-=e.lv}}
+  enemies=enemies.filter(e=>!e.done);
+  if(lives<=0){lives=0;end(false);return}
+  for(const t of towers){t.cd-=dt;if(t.cd>0)continue;let tg=null,bd=1e9;
+   for(const e of enemies){const d=Math.hypot(e.x-t.x,e.y-t.y);if(d<=t.r){const pr=e.s*10000-Math.hypot(wp[Math.min(e.s,wp.length-1)][0]-e.x,wp[Math.min(e.s,wp.length-1)][1]-e.y);if(!tg||pr>bd){tg=e;bd=pr}}}
+   if(tg){t.cd=t.f;t.a=Math.atan2(tg.y-t.y,tg.x-t.x);bullets.push({x:t.x,y:t.y,t:tg,d:t.d,col:t.col})}}
+  for(const b of bullets){const e=b.t;if(e.hp<=0){b.dead=1;continue}const dx=e.x-b.x,dy=e.y-b.y,d=Math.hypot(dx,dy),m=380*dt;
+   if(d<=m+4){e.hp-=b.d;b.dead=1;if(e.hp<=0&&!e.paid){e.paid=1;gold+=e.rw}}else{b.x+=dx/d*m;b.y+=dy/d*m}}
+  bullets=bullets.filter(b=>!b.dead);enemies=enemies.filter(e=>e.hp>0);
+  if(state=='wave'&&!spawn&&!enemies.length){if(wave>=WAVES)end(true);else{state='build';gold+=20;label()}}
+ }
+}
+function cell(e){const r=cv.getBoundingClientRect();return[Math.floor((e.clientX-r.left)*W/r.width/TS),Math.floor((e.clientY-r.top)*H/r.height/TS)]}
+cv.addEventListener('pointermove',e=>hover=cell(e));cv.addEventListener('pointerleave',()=>hover=null);
+cv.addEventListener('pointerdown',e=>{if(state=='win'||state=='lose'){reset();return}
+ const[cx,cy]=cell(e);hover=[cx,cy];if(cx<0||cy<0||cx>=GW||cy>=GH||road.has(cx+','+cy))return;
+ const i=towers.findIndex(t=>t.cx==cx&&t.cy==cy);
+ if(i>=0){gold+=Math.floor(towers[i].c*.6);towers.splice(i,1);return}
+ const T=TYPES[sel];if(gold<T.c){flash=[cx,cy,.4];return}
+ gold-=T.c;towers.push({cx,cy,x:cx*TS+TS/2,y:cy*TS+TS/2,r:T.r,d:T.d,f:T.f,c:T.c,col:T.col,cd:0,a:0})});
+addEventListener('keydown',e=>{if(e.code=='Space'){e.preventDefault();action()}if(e.key>='1'&&e.key<='3')pick(+e.key-1)});
+function draw(dt){
+ g.fillStyle='#1b2430';g.fillRect(0,0,W,H);
+ for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){g.fillStyle=road.has(x+','+y)?'#6b5b45':((x+y)&1?'#1f2a37':'#1c2633');g.fillRect(x*TS,y*TS,TS,TS)}
+ g.fillStyle='#e63946';g.fillRect(W-8,8*TS+4,8,TS-8);
+ if(hover&&hover[0]>=0&&hover[0]<GW&&hover[1]>=0&&hover[1]<GH&&!road.has(hover[0]+','+hover[1])){const T=TYPES[sel],x=hover[0]*TS+TS/2,y=hover[1]*TS+TS/2;
+  g.fillStyle='rgba(255,255,255,.12)';g.beginPath();g.arc(x,y,T.r,0,7);g.fill();g.strokeStyle='rgba(255,255,255,.4)';g.stroke()}
+ for(const t of towers){g.fillStyle='#30363d';g.fillRect(t.cx*TS+4,t.cy*TS+4,TS-8,TS-8);g.save();g.translate(t.x,t.y);g.rotate(t.a);g.fillStyle=t.col;g.fillRect(0,-4,18,8);g.beginPath();g.arc(0,0,9,0,7);g.fill();g.restore()}
+ for(const e of enemies){g.fillStyle=e.k=='sq'?'#a371f7':e.k=='tri'?'#f0883e':'#ff7b72';g.beginPath();
+  if(e.k=='sq')g.rect(e.x-10,e.y-10,20,20);else if(e.k=='tri'){g.moveTo(e.x,e.y-10);g.lineTo(e.x+10,e.y+8);g.lineTo(e.x-10,e.y+8);g.closePath()}else g.arc(e.x,e.y,9,0,7);g.fill();
+  g.fillStyle='#000';g.fillRect(e.x-10,e.y-16,20,3);g.fillStyle='#3fb950';g.fillRect(e.x-10,e.y-16,20*Math.max(0,e.hp/e.mx),3)}
+ g.fillStyle='#fff';for(const b of bullets){g.fillStyle=b.col;g.beginPath();g.arc(b.x,b.y,3,0,7);g.fill()}
+ if(flash[2]>0){flash[2]-=dt;g.fillStyle='rgba(255,60,60,.5)';g.fillRect(flash[0]*TS,flash[1]*TS,TS,TS)}
+ g.fillStyle='rgba(13,17,23,.75)';g.fillRect(0,0,W,24);g.font='bold 14px system-ui';g.textAlign='left';g.fillStyle='#ffd166';g.fillText('Or : '+gold,8,17);
+ g.fillStyle='#ff7b72';g.fillText('Vies : '+lives,100,17);g.fillStyle='#e6edf3';g.fillText('Vague : '+wave+'/'+WAVES,190,17);g.textAlign='right';g.fillText('Meilleur (vies restantes) : '+(best||'--'),W-8,17);
+ if(state=='win'||state=='lose'){g.fillStyle='rgba(0,0,0,.75)';g.fillRect(0,130,W,130);g.textAlign='center';g.fillStyle=state=='win'?'#3fb950':'#ff7b72';g.font='bold 36px system-ui';
+  g.fillText(state=='win'?'Victoire !':'Défaite...',W/2,185);g.fillStyle='#fff';g.font='16px system-ui';g.fillText(state=='win'?'Il te restait '+lives+' vies.':'Les ennemis ont percé ta défense.',W/2,215);g.fillText('Clique ou appuie sur Espace pour rejouer',W/2,243)}
+}
+let last=performance.now();reset();
+(function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;update(dt);draw(dt);requestAnimationFrame(loop)})(last);
+</script></body></html>

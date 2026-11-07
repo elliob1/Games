@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Taquin 15</title>
+<style>
+:root{--bg:#10121f;--pn:#1b2038;--ac:#a3e635;--tx:#e6e9f5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#1c2142,var(--bg));color:var(--tx);font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px;user-select:none;-webkit-user-select:none}
+h1{margin:6px 0;font-size:1.5rem;letter-spacing:.08em;color:var(--ac)}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;width:min(94vw,400px);margin:6px 0}
+.stat{background:var(--pn);padding:6px 12px;border-radius:8px;text-align:center;font-variant-numeric:tabular-nums}
+button{background:var(--ac);color:#1a2600;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:1rem}
+#b{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:min(94vw,400px);background:var(--pn);padding:8px;border-radius:14px;touch-action:manipulation}
+.t{aspect-ratio:1;border-radius:10px;background:linear-gradient(145deg,#3b4a8c,#2a3566);display:flex;align-items:center;justify-content:center;font-size:clamp(20px,8vw,36px);font-weight:800;cursor:pointer}
+.t.ok{background:linear-gradient(145deg,#4d7c0f,#3f6212)}
+.t.e{background:transparent;cursor:default}
+#msg{height:1.6em;margin:10px;font-weight:700;color:var(--ac)}
+small{opacity:.6;text-align:center;max-width:400px}
+</style></head><body>
+<h1>TAQUIN 15</h1>
+<div class="bar"><div class="stat" id="mv">Coups 0</div><div class="stat" id="tm">0 s</div><div class="stat" id="bs">Record --</div></div>
+<div class="bar"><button id="rj">Rejouer</button></div>
+<div id="b"></div>
+<div id="msg"></div>
+<small>Cliquez une tuile (ou toute une rangée) ou utilisez les flèches pour la faire glisser.</small>
+<script>
+const $=s=>document.querySelector(s),K='pz_slide15_best';
+let a,moves,t0,timer,tm,done;
+const cells=[];
+function best(){try{return +localStorage.getItem(K)||0}catch(e){return 0}}
+const solved=()=>a.every((v,i)=>v===(i+1)%16);
+function init(){
+  clearInterval(timer);
+  do{
+    a=[...Array(16).keys()].map(i=>(i+1)%16);
+    let e=15,prev=-1;
+    for(let k=0;k<300;k++){
+      const r=e>>2,c=e&3,o=[];
+      if(r>0)o.push(e-4);if(r<3)o.push(e+4);if(c>0)o.push(e-1);if(c<3)o.push(e+1);
+      const f=o.filter(x=>x!==prev),n=f[Math.random()*f.length|0];
+      a[e]=a[n];a[n]=0;prev=e;e=n;
+    }
+  }while(solved());
+  moves=0;tm=0;t0=0;done=0;$('#msg').textContent='';draw();
+}
+function draw(){
+  a.forEach((v,i)=>{const d=cells[i];d.textContent=v||'';d.className='t'+(v?(v===i+1?' ok':''):' e')});
+  $('#mv').textContent='Coups '+moves;$('#tm').textContent=tm+' s';
+  const b=best();$('#bs').textContent='Record '+(b?b+' s':'--');
+}
+function slide(i){
+  if(done)return;
+  let e=a.indexOf(0);
+  if(i===e)return;
+  let step;
+  if((i>>2)===(e>>2))step=i>e?1:-1;else if((i&3)===(e&3))step=i>e?4:-4;else return;
+  if(!t0){t0=Date.now();timer=setInterval(()=>{tm=(Date.now()-t0)/1000|0;$('#tm').textContent=tm+' s'},250)}
+  while(e!==i){a[e]=a[e+step];a[e+step]=0;e+=step}
+  moves++;draw();
+  if(solved()){
+    done=1;clearInterval(timer);tm=(Date.now()-t0)/1000|0;
+    let m='Bravo ! '+moves+' coups en '+tm+' s.';
+    const b=best();if(!b||tm<b){try{localStorage.setItem(K,tm)}catch(x){}m+=' Record !'}
+    $('#msg').textContent=m;draw();
+  }
+}
+for(let i=0;i<16;i++){
+  const d=document.createElement('div');
+  d.onpointerdown=e=>{e.preventDefault();slide(i)};
+  $('#b').appendChild(d);cells.push(d);
+}
+document.onkeydown=e=>{
+  const k=e.key,z=a.indexOf(0),r=z>>2,c=z&3;let t=-1;
+  if(k==='ArrowUp'&&r<3)t=z+4;
+  else if(k==='ArrowDown'&&r>0)t=z-4;
+  else if(k==='ArrowLeft'&&c<3)t=z+1;
+  else if(k==='ArrowRight'&&c>0)t=z-1;
+  if(k.startsWith('Arrow'))e.preventDefault();
+  if(t>=0)slide(t);
+};
+$('#rj').onclick=init;
+init();
+</script></body></html>

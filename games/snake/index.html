@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Snake</title>
+<style>
+html,body{margin:0;height:100%;background:#0b1a12;color:#d1fae5;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+canvas{background:#052e1a;border:3px solid #16a34a;border-radius:10px;max-width:96vw;max-height:78vh}
+#hud{margin-bottom:10px;font-size:18px}
+button{margin-top:12px;padding:8px 18px;border:0;border-radius:8px;background:#16a34a;color:#fff;font-size:15px;cursor:pointer}
+small{margin-top:8px;opacity:.7}
+</style></head><body>
+<div id="hud">Score : <b id="s">0</b> · Record : <b id="b">0</b></div>
+<canvas id="c" width="400" height="400"></canvas>
+<button id="r">Rejouer</button>
+<small>Flèches / WASD ou glisse sur l'écran</small>
+<script>
+var c=document.getElementById('c'),x=c.getContext('2d'),N=20,S=20;
+var snake,dir,next,food,score,best=+localStorage.getItem('pz_snake')||0,over,timer;
+document.getElementById('b').textContent=best;
+function place(){do{food={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)}}while(snake.some(function(p){return p.x==food.x&&p.y==food.y}))}
+function start(){snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};next=dir;score=0;over=false;document.getElementById('s').textContent=0;place();clearInterval(timer);timer=setInterval(step,110);draw()}
+function step(){
+  dir=next;var h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(h.x<0||h.y<0||h.x>=N||h.y>=N||snake.some(function(p){return p.x==h.x&&p.y==h.y})){over=true;clearInterval(timer);if(score>best){best=score;localStorage.setItem('pz_snake',best);document.getElementById('b').textContent=best}draw();return}
+  snake.unshift(h);
+  if(h.x==food.x&&h.y==food.y){score++;document.getElementById('s').textContent=score;place()}else snake.pop();
+  draw();
+}
+function draw(){
+  x.fillStyle='#052e1a';x.fillRect(0,0,400,400);
+  x.fillStyle='#ef4444';x.beginPath();x.arc(food.x*S+10,food.y*S+10,8,0,7);x.fill();
+  snake.forEach(function(p,i){x.fillStyle=i?'#22c55e':'#86efac';x.fillRect(p.x*S+1,p.y*S+1,S-2,S-2)});
+  if(over){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,400,400);x.fillStyle='#fff';x.font='bold 32px system-ui';x.textAlign='center';x.fillText('Perdu !',200,200)}
+}
+function turn(dx,dy){if(dx==-dir.x&&dy==-dir.y)return;next={x:dx,y:dy}}
+document.addEventListener('keydown',function(e){
+  var k=e.key;
+  if(k=='ArrowUp'||k=='w'){turn(0,-1)}else if(k=='ArrowDown'||k=='s'){turn(0,1)}else if(k=='ArrowLeft'||k=='a'){turn(-1,0)}else if(k=='ArrowRight'||k=='d'){turn(1,0)}else return;
+  e.preventDefault();
+});
+var tx,ty;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)<20&&Math.abs(dy)<20)return;
+  if(Math.abs(dx)>Math.abs(dy))turn(dx>0?1:-1,0);else turn(0,dy>0?1:-1);
+},{passive:true});
+document.getElementById('r').onclick=start;
+start();
+</script></body></html>

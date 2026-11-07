@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toilet Paper Roll Rush</title>
+<style>
+  /* ---- All styles scoped to #tpr-root so your website is never touched ---- */
+  #tpr-root, #tpr-root * { box-sizing: border-box; margin: 0; padding: 0; }
+  #tpr-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 420px;
+    overflow: hidden;
+    background: #f2f5f8;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-user-select: none; user-select: none;
+  }
+  #tpr-root canvas { display: block; width: 100%; height: 100%; }
+
+  /* HUD */
+  #tpr-hud {
+    position: absolute; top: 14px; left: 14px;
+    display: flex; gap: 10px; align-items: center;
+    pointer-events: none; opacity: 0; transition: opacity .3s;
+  }
+  #tpr-hud.show { opacity: 1; }
+  .tpr-pill {
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(120,130,145,.25);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-weight: 700; font-size: 15px; color: #2a3138;
+    box-shadow: 0 2px 10px rgba(60,70,90,.10);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tpr-pill .ico { font-size: 16px; }
+  #tpr-score.bump { animation: tprBump .28s ease; }
+  @keyframes tprBump { 40% { transform: scale(1.28); color: #ff3d63; } }
+  #tpr-best { font-weight: 600; color: #6b7683; font-size: 13px; }
+
+  /* Overlays */
+  .tpr-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(120% 120% at 50% 30%, rgba(255,255,255,.55), rgba(235,240,246,.88));
+    backdrop-filter: blur(3px);
+    transition: opacity .35s; z-index: 5;
+  }
+  .tpr-overlay.hidden { opacity: 0; pointer-events: none; }
+  .tpr-card {
+    background: #fff;
+    border: 1px solid rgba(120,130,145,.22);
+    border-radius: 22px;
+    box-shadow: 0 18px 60px rgba(50,60,80,.18);
+    padding: 34px 40px 30px;
+    max-width: 430px; width: calc(100% - 48px);
+    text-align: center; color: #2a3138;
+  }
+  .tpr-card h1 {
+    font-size: 30px; letter-spacing: -.5px; margin-bottom: 6px;
+    background: linear-gradient(90deg,#ff3d63,#2f7bff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tpr-card .sub { font-size: 14px; color: #6b7683; margin-bottom: 18px; }
+  .tpr-keys { display:flex; gap:10px; justify-content:center; margin: 14px 0 20px; }
+  .tpr-key {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: #f4f6f9; border: 1px solid #d7dde5;
+    box-shadow: 0 3px 0 #cdd4dd;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 20px; font-weight: 700; color:#39424c;
+  }
+  .tpr-tip { font-size: 13px; color: #7c8794; line-height: 1.55; margin-bottom: 22px; }
+  .tpr-tip b { color: #ff3d63; }
+  .tpr-btn {
+    appearance: none; border: 0; cursor: pointer;
+    font: inherit; font-weight: 800; font-size: 17px; color: #fff;
+    background: linear-gradient(180deg,#ff5d7d,#ff2d55);
+    padding: 13px 42px; border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(255,45,85,.35), inset 0 -2px 0 rgba(0,0,0,.12);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .tpr-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(255,45,85,.42), inset 0 -2px 0 rgba(0,0,0,.12); }
+  .tpr-btn:active { transform: translateY(0); }
+  #tpr-final { font-size: 44px; font-weight: 900; margin: 4px 0 2px; color:#2a3138; }
+  #tpr-final-sub { font-size: 13px; color:#7c8794; margin-bottom: 20px; }
+  #tpr-reason { font-size: 15px; color:#ff2d55; font-weight:700; margin-bottom: 4px; }
+
+  #tpr-error {
+    position:absolute; inset:0; z-index: 9;
+    display:none; align-items:center; justify-content:center;
+    background:#fff; color:#39424c; text-align:center; padding: 30px;
+  }
+  #tpr-error.show { display:flex; }
+</style>
+</head>
+<body>
+<div id="tpr-root">
+  <div id="tpr-hud">
+    <div class="tpr-pill"><span class="ico">🧻</span><span id="tpr-score">0</span></div>
+    <div class="tpr-pill" id="tpr-best">BEST 0</div>
+  </div>
+
+  <div class="tpr-overlay" id="tpr-start">
+    <div class="tpr-card">
+      <h1>TOILET PAPER RUSH</h1>
+      <div class="sub">A rolling obstacle run through the white void.</div>
+      <div class="tpr-keys"><div class="tpr-key">←</div><div class="tpr-key">→</div></div>
+      <div class="tpr-tip">
+        Steer with the <b>arrow keys</b> — the whole screen banks as you turn.<br>
+        Grab spare rolls for points, dodge the <b>spike wheels</b>,<br>
+        and don't roll off the edge of the shelf.
+      </div>
+      <button class="tpr-btn" id="tpr-start-btn">START ROLLING</button>
+    </div>
+  </div>
+
+  <div class="tpr-overlay hidden" id="tpr-over">
+    <div class="tpr-card">
+      <h1 id="tpr-reason">SPIKED!</h1>
+      <div id="tpr-final">0</div>
+      <div id="tpr-final-sub">SCORE</div>
+      <button class="tpr-btn" id="tpr-restart-btn">RESTART</button>
+    </div>
+  </div>
+
+  <div id="tpr-error">
+    <div>
+      <h2 style="margin-bottom:10px;">Couldn't load 3D engine</h2>
+      <p style="color:#6b7683;font-size:14px;">Three.js failed to load from the CDN.<br>Please check your connection and refresh.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+        onerror="window.__tprThreeFailed=true"></script>
+<script>
+(function () {
+  'use strict';
+  if (window.__tprThreeFailed || typeof THREE === 'undefined') {
+    document.getElementById('tpr-error').classList.add('show');
+    return;
+  }
+
+  /* ============================== CONFIG ============================== */
+  var ROOT      = document.getElementById('tpr-root');
+  var SEG_LEN   = 10;            // length of each platform segment (Z)
+  var ROLL_R    = 0.5;           // player roll radius
+  var BASE_SPD  = 9.0;           // forward units/sec
+  var MAX_SPD   = 17.0;
+  var STEER_SPD = 6.8;           // lateral units/sec
+  var MAX_TILT  = 10 * Math.PI / 180;   // whole-screen bank (8–12°)
+  var TILT_K    = 9;             // tilt smoothing rate
+  var STEER_K   = 14;            // lateral velocity smoothing rate
+  var FIXED_DT  = 1 / 120;       // physics substep (reliable collisions)
+  var X_LIMIT   = 6.0;
+
+  /* ============================ RENDERER ============================== */
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+  } catch (e) {
+    document.getElementById('tpr-error').classList.add('show');
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor(0xf2f5f8, 1);
+  ROOT.insertBefore(renderer.domElement, ROOT.firstChild);
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf2f5f8);
+  scene.fog = new THREE.Fog(0xf2f5f8, 42, 98);
+
+  var camera = new THREE.PerspectiveCamera(70, 1, 0.1, 220);
+
+  /* ============================= LIGHTING ============================= */
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xdde4ec, 0.95));
+  var sun = new THREE.DirectionalLight(0xffffff, 0.85);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -26; sun.shadow.camera.right = 26;
+  sun.shadow.camera.top = 26;   sun.shadow.camera.bottom = -26;
+  sun.shadow.camera.near = 1;   sun.shadow.camera.far = 70;
+  sun.shadow.bias = -0.0006;
+  scene.add(sun); scene.add(sun.target);
+
+  /* ======================== SHARED GEO / MATERIALS ==================== */
+  var G = {
+    box:     new THREE.BoxGeometry(1, 1, 1),
+    cyl:     new THREE.CylinderGeometry(1, 1, 1, 28),
+    cylLo:   new THREE.CylinderGeometry(1, 1, 1, 14),
+    cone:    new THREE.ConeGeometry(0.11, 0.3, 8),
+    sphere:  new THREE.SphereGeometry(1, 18, 14),
+    ring:    new THREE.TorusGeometry(1, 0.09, 10, 30),
+    disc:    new THREE.CircleGeometry(1, 26)
+  };
+  var M = {
+    plat:   new THREE.MeshStandardMaterial({ color: 0x9aa4ae, roughness: 0.92, metalness: 0 }),
+    platB:  new THREE.MeshStandardMaterial({ color: 0x828c97, roughness: 0.95 }),
+    pink:   new THREE.MeshStandardMaterial({ color: 0xff4d6d, roughness: 0.6 }),
+    white:  new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 }),
+    paper:  new THREE.MeshStandardMaterial({ color: 0xf7f9fb, roughness: 0.9 }),
+    core:   new THREE.MeshStandardMaterial({ color: 0x8a5a2b, roughness: 0.8 }),
+    spikeR: new THREE.MeshStandardMaterial({ color: 0xe8365d, roughness: 0.55 }),
+    spikeD: new THREE.MeshStandardMaterial({ color: 0x3a3f47, roughness: 0.6 }),
+    cyan:   new THREE.MeshStandardMaterial({ color: 0x2fd4e6, roughness: 0.4, emissive: 0x0b6d78, emissiveIntensity: 0.35 }),
+    blue:   new THREE.MeshStandardMaterial({ color: 0x2f7bff, roughness: 0.35, emissive: 0x0d2f78, emissiveIntensity: 0.3 }),
+    red:    new THREE.MeshStandardMaterial({ color: 0xff3b30, roughness: 0.5 }),
+    trail:  new THREE.MeshBasicMaterial({ color: 0x39c5ff, transparent: true, opacity: 0.55, depthWrite: false })
+  };
+
+  function mesh(g, m) { var o = new THREE.Mesh(g, m); return o; }
+
+  /* ====================== TOILET PAPER ROLL BUILDER =================== */
+  function buildRoll(scale) {
+    var grp = new THREE.Group();
+    var s = scale || 1;
+    // paper body (open-ended so the core shows through the faces)
+    var body = mesh(G.cyl, M.paper);
+    body.scale.set(ROLL_R * s, 1.0 * s, ROLL_R * s);
+    body.rotation.z = Math.PI / 2;           // axis along X
+    body.geometry = G.cyl;                   // shared unit cyl, scaled
+    body.material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, side: THREE.DoubleSide });
+    grp.add(body);
+    // brown cardboard core tube
+    var core = mesh(G.cyl, M.core);
+    core.scale.set(0.17 * s, 1.04 * s, 0.17 * s);
+    core.rotation.z = Math.PI / 2;
+    grp.add(core);
+    // end faces: white ring + brown center (visible circular cardboard)
+    for (var side = -1; side <= 1; side += 2) {
+      var ring = mesh(G.ring, M.white);
+      ring.geometry = G.disc;
+      ring.scale.set(ROLL_R * s, ROLL_R * s, 1);
+      // build ring look via two discs: outer white, inner brown
+      var outer = mesh(G.disc, new THREE.MeshStandardMaterial({ color: 0xf2f4f7, roughness: 0.9 }));
+      outer.scale.set(ROLL_R * s, ROLL_R * s, 1);
+      outer.position.x = side * 0.5 * s;
+      outer.rotation.y = side * Math.PI / 2;
+      grp.add(outer);
+      var inner = mesh(G.disc, M.core);
+      inner.scale.set(0.17 * s, 0.17 * s, 1);
+      inner.position.x = side * 0.505 * s;
+      inner.rotation.y = side * Math.PI / 2;
+      grp.add(inner);
+      grp.remove(ring); // placeholder not needed
+    }
+    grp.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+    return grp;
+  }
+
+  /* ========================= HAZARD (SPIKE WHEEL) ===================== */
+  function buildHazard(spikeMat) {
+    var grp = new THREE.Group();
+    var disk = mesh(G.cyl, M.white);
+    disk.scale.set(0.5, 0.1, 0.5);
+    disk.rotation.x = Math.PI / 2;           // face toward +Z (the player)
+    grp.add(disk);
+    var hub = mesh(G.cyl, M.core);
+    hub.scale.set(0.16, 0.16, 0.16);
+    hub.rotation.x = Math.PI / 2;
+    grp.add(hub);
+    var N = 10;
+    for (var i = 0; i < N; i++) {
+      var a = (i / N) * Math.PI * 2;
+      var c = mesh(G.cone, spikeMat);
+      c.position.set(Math.cos(a) * 0.6, Math.sin(a) * 0.6, 0);
+      c.rotation.z = a - Math.PI / 2;
+      grp.add(c);
+    }
+    grp.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
+    return grp;
+  }
+
+  /* ============================ PLAYER ================================ */
+  var player = { x: 0, y: ROLL_R, z: 0, vx: 0, roll: 0, fall: -1 };
+  var playerObj = buildRoll(1);
+  scene.add(playerObj);
+
+  /* ============================ COURSE ================================ */
+  var course = new THREE.Group();
+  scene.add(course);
+  var segments = [];          // { zc, center, hw, obj, hazards[], collects[] }
+  var nextZ = 0;              // world Z where the next segment begins (going -Z)
+  var lastCenter = 0, lastHW = 3.4;
+
+  function addPlatform(zc, center, hw) {
+    var grp = new THREE.Group();
+    var top = mesh(G.box, M.plat);
+    top.scale.set(hw * 2, 0.5, SEG_LEN);
+    top.position.y = -0.25;
+    top.receiveShadow = true; top.castShadow = true;
+    grp.add(top);
+    // pink edge accents (front-facing rims like the reference)
+    for (var s = -1; s <= 1; s += 2) {
+      var trim = mesh(G.box, M.pink);
+      trim.scale.set(0.14, 0.07, SEG_LEN);
+      trim.position.set(s * (hw - 0.07), 0.015, 0);
+      grp.add(trim);
+    }
+    grp.position.set(center, 0, zc);
+    course.add(grp);
+    return grp;
+  }
+
+  function addSegment() {
+    var zc = nextZ - SEG_LEN / 2;
+    nextZ -= SEG_LEN;
+    var d = -zc;                                   // distance travelled
+    // wander the safe corridor, always leaving an overlapping path
+    var hw = 3.4 + Math.sin(d * 0.07) * 0.7 + (Math.random() - 0.5) * 0.8;
+    hw = Math.max(2.4, Math.min(4.3, hw));
+    var maxStep = (lastHW + hw) - 2.6;             // guaranteed overlap ≥ 2.6
+    var dc = (Math.random() * 2 - 1) * Math.max(0.6, maxStep);
+    var center = Math.max(-3.2, Math.min(3.2, lastCenter + dc));
+    lastCenter = center; lastHW = hw;
+
+    var seg = { zc: zc, center: center, hw: hw, obj: addPlatform(zc, center, hw), hazards: [], collects: [] };
+
+    /* --- hazards (never in the first 26 units) --- */
+    if (d > 26) {
+      var chance = Math.min(0.9, 0.3 + d * 0.0007);
+      if (Math.random() < chance) {
+        var count = (d > 90 && Math.random() < 0.4) ? 2 : 1;
+        for (var i = 0; i < count; i++) {
+          var mat = Math.random() < 0.65 ? M.spikeR : M.spikeD;
+          var h = buildHazard(mat);
+          var amp = Math.max(0.6, hw - 0.9);
+          var hz = zc + (count === 2 ? (i === 0 ? -2.4 : 2.4) : (Math.random() * 4 - 2));
+          h.position.set(center, 0.62, hz);
+          seg.obj.add(h);
+          h.position.x -= center; h.position.z -= zc;   // store local
+          seg.hazards.push({ obj: h, amp: amp, w: 0.9 + Math.random() * 1.1, ph: Math.random() * 6.28, zc: hz, base: 0 });
+        }
+      }
+    }
+
+    /* --- collectible spare rolls --- */
+    if (Math.random() < 0.62) {
+      var n = 1 + (Math.random() < 0.4 ? 1 : 0) + (Math.random() < 0.2 ? 1 : 0);
+      for (var c = 0; c < n; c++) {
+        var col = buildRoll(0.55);
+        var cx = center + (Math.random() * 2 - 1) * hw * 0.45;
+        var cz = zc + (c - (n - 1) / 2) * 2.1;
+        col.position.set(cx, 0.78, cz);
+        seg.obj.add(col);
+        col.position.x -= center; col.position.z -= zc;
+        seg.collects.push({ obj: col, x: cx, z: cz, alive: true, ph: Math.random() * 6.28 });
+      }
+    }
+
+    /* --- decorative side shelves (video's wall shelves) --- */
+    if (Math.random() < 0.55) {
+      var side = Math.random() < 0.5 ? -1 : 1;
+      var sh = mesh(G.box, M.plat);
+      var shw = 2.6 + Math.random() * 2.4;
+      sh.scale.set(shw, 0.35, 5.5);
+      sh.position.set(side * (hw + 2.6 + Math.random() * 2.2), -1.4 + Math.random() * 3.6, zc + (Math.random() * 4 - 2));
+      sh.castShadow = true;
+      seg.obj.add(sh); sh.position.x -= center; sh.position.z -= zc;
+      var tr = mesh(G.box, M.pink);
+      tr.scale.set(shw, 0.05, 5.5);
+      tr.position.set(sh.position.x, sh.position.y + 0.2, sh.position.z);
+      seg.obj.add(tr);
+    }
+    /* --- hanging chandelier prop (under platform, like the video) --- */
+    if (Math.random() < 0.22) {
+      var ch = new THREE.Group();
+      var stem = mesh(G.cylLo, M.white); stem.scale.set(0.05, 0.8, 0.05); stem.position.y = -0.4;
+      ch.add(stem);
+      for (var b = 0; b < 3; b++) {
+        var bulb = mesh(G.sphere, M.white);
+        bulb.scale.setScalar(0.16);
+        bulb.position.set((b - 1) * 0.55, -0.95, 0);
+        ch.add(bulb);
+      }
+      ch.position.set((Math.random() * 2 - 1) * hw * 0.5, -0.5, Math.random() * 4 - 2);
+      seg.obj.add(ch);
+    }
+    /* --- red door-frame gate (video's pink doorways) --- */
+    if (Math.random() < 0.16) {
+      var gate = new THREE.Group();
+      var post = mesh(G.box, M.red); post.scale.set(0.18, 2.6, 0.18);
+      var p1 = post.clone(); p1.position.set(-1.5, 1.3, 0);
+      var p2 = post.clone(); p2.position.set(1.5, 1.3, 0);
+      var lint = mesh(G.box, M.red); lint.scale.set(3.2, 0.18, 0.18); lint.position.set(0, 2.6, 0);
+      gate.add(p1, p2, lint);
+      gate.position.set(0, 0, Math.random() * 5 - 2.5);
+      seg.obj.add(gate);
+    }
+    /* --- cyan capsule + blue sphere floaters --- */
+    if (Math.random() < 0.4) {
+      var cap = new THREE.Group();
+      var cc = mesh(G.cylLo, M.cyan); cc.scale.set(0.09, 0.5, 0.09);
+      var e1 = mesh(G.sphere, M.cyan); e1.scale.setScalar(0.09); e1.position.y = 0.25;
+      var e2 = e1.clone(); e2.position.y = -0.25;
+      cap.add(cc, e1, e2);
+      cap.rotation.z = 0.7;
+      cap.position.set((Math.random() < 0.5 ? -1 : 1) * (hw - 0.35), 1.15, Math.random() * 6 - 3);
+      cap.userData.bob = Math.random() * 6.28;
+      seg.obj.add(cap);
+      seg.floaters = seg.floaters || []; seg.floaters.push(cap);
+    }
+    if (Math.random() < 0.2) {
+      var bs = mesh(G.sphere, M.blue); bs.scale.setScalar(0.26);
+      bs.position.set((Math.random() * 2 - 1) * hw * 0.6, 1.5 + Math.random(), Math.random() * 6 - 3);
+      bs.userData.bob = Math.random() * 6.28;
+      seg.obj.add(bs);
+      seg.floaters = seg.floaters || []; seg.floaters.push(bs);
+    }
+
+    segments.push(seg);
+  }
+
+  function clearCourse() {
+    for (var i = 0; i < segments.length; i++) course.remove(segments[i].obj);
+    segments.length = 0;
+    nextZ = 20; lastCenter = 0; lastHW = 3.4;
+    // safe runway
+    for (var k = 0; k < 3; k++) addSegment();
+  }
+
+  /* ============================ EFFECTS =============================== */
+  var fx = [];   // { obj, t, life, kind }
+  function spawnRing(pos, mat, scaleFrom, scaleTo, life) {
+    var r = mesh(G.ring, mat.clone());
+    r.material.transparent = true;
+    r.rotation.x = Math.PI / 2;
+    r.position.copy(pos);
+    r.scale.setScalar(scaleFrom);
+    scene.add(r);
+    fx.push({ obj: r, t: 0, life: life, s0: scaleFrom, s1: scaleTo, kind: 'ring' });
+  }
+  var trailTimer = 0;
+
+  /* ============================== INPUT =============================== */
+  var keys = { left: false, right: false };
+  function onKeyDown(e) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].indexOf(e.key) !== -1) e.preventDefault();
+    if (e.key === 'ArrowLeft') keys.left = true;
+    if (e.key === 'ArrowRight') keys.right = true;
+  }
+  function onKeyUp(e) {
+    if (e.key === 'ArrowLeft') keys.left = false;
+    if (e.key === 'ArrowRight') keys.right = false;
+  }
+  window.addEventListener('keydown', onKeyDown, { passive: false });
+  window.addEventListener('keyup', onKeyUp);
+  window.addEventListener('blur', function () { keys.left = keys.right = false; });
+
+  /* =========================== GAME STATE ============================= */
+  var state = 'menu';           // menu | play | falling | over
+  var score = 0, best = 0, speed = BASE_SPD, tilt = 0, elapsed = 0;
+  try { best = parseInt(localStorage.getItem('tpr_best') || '0', 10) || 0; } catch (e) {}
+  document.getElementById('tpr-best').textContent = 'BEST ' + best;
+
+  var hud = document.getElementById('tpr-hud');
+  var scoreEl = document.getElementById('tpr-score');
+  var startOv = document.getElementById('tpr-start');
+  var overOv = document.getElementById('tpr-over');
+
+  function setScore(v) {
+    score = v;
+    scoreEl.textContent = Math.floor(score);
+  }
+  function bumpScore() {
+    scoreEl.classList.remove('bump'); void scoreEl.offsetWidth; scoreEl.classList.add('bump');
+  }
+
+  function startGame() {
+    clearCourse();
+    player.x = 0; player.y = ROLL_R; player.z = 0; player.vx = 0; player.roll = 0; player.fall = -1;
+    setScore(0); speed = BASE_SPD; tilt = 0; elapsed = 0;
+    for (var i = 0; i < fx.length; i++) scene.remove(fx[i].obj);
+    fx.length = 0;
+    // snap camera
+    camera.position.set(0, 3.1, 7.5);
+    camera.lookAt(0, 0.9, -6);
+    state = 'play';
+    startOv.classList.add('hidden');
+    overOv.classList.add('hidden');
+    hud.classList.add('show');
+  }
+
+  function gameOver(reason) {
+    if (state === 'over') return;
+    state = 'over';
+    document.getElementById('tpr-reason').textContent = reason;
+    document.getElementById('tpr-final').textContent = Math.floor(score);
+    if (score > best) {
+      best = Math.floor(score);
+      try { localStorage.setItem('tpr_best', String(best)); } catch (e) {}
+      document.getElementById('tpr-best').textContent = 'BEST ' + best;
+    }
+    setTimeout(function () { overOv.classList.remove('hidden'); }, 450);
+  }
+
+  document.getElementById('tpr-start-btn').addEventListener('click', startGame);
+  document.getElementById('tpr-restart-btn').addEventListener('click', startGame);
+
+  /* ============================ PHYSICS =============================== */
+  function segmentAt(z) {
+    for (var i = 0; i < segments.length; i++) {
+      var s = segments[i];
+      if (z <= s.zc + SEG_LEN / 2 && z >= s.zc - SEG_LEN / 2) return s;
+    }
+    return null;
+  }
+
+  function physicsStep(dt) {
+    elapsed += dt;
+    var steer = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+
+    // lateral velocity with smooth accel/easing
+    var targetVx = steer * STEER_SPD;
+    player.vx += (targetVx - player.vx) * (1 - Math.exp(-STEER_K * dt));
+    player.x += player.vx * dt;
+    if (player.x < -X_LIMIT) { player.x = -X_LIMIT; player.vx = 0; }
+    if (player.x >  X_LIMIT) { player.x =  X_LIMIT; player.vx = 0; }
+
+    // forward auto-run, ramps with distance
+    speed = Math.min(MAX_SPD, BASE_SPD + (-player.z) * 0.0045);
+    player.z -= speed * dt;
+    player.roll += (speed / ROLL_R) * dt;      // rolling synced to travel
+
+    // score from distance
+    setScore(score + speed * dt * 1.2);
+
+    // whole-screen tilt target (frame-rate independent smoothing)
+    var tiltTarget = -steer * MAX_TILT;
+    tilt += (tiltTarget - tilt) * (1 - Math.exp(-TILT_K * dt));
+
+    // generate / prune course
+    while (nextZ > player.z - 100) addSegment();
+    for (var i = segments.length - 1; i >= 0; i--) {
+      if (segments[i].zc > player.z + 30) { course.remove(segments[i].obj); segments.splice(i, 1); }
+    }
+
+    if (state === 'falling') {
+      player.fall += dt;
+      player.y -= (2 + player.fall * 14) * dt;
+      if (player.fall > 0.85) gameOver('ROLLED OFF!');
+      return;
+    }
+
+    // stay-on-platform check (fall if center leaves the shelf)
+    var seg = segmentAt(player.z);
+    if (!seg || Math.abs(player.x - seg.center) > seg.hw - 0.32) {
+      state = 'falling'; player.fall = 0;
+      return;
+    }
+
+    // hazards: patrol + spin + collision (substepped => tunnel-proof)
+    for (var si = 0; si < segments.length; si++) {
+      var S = segments[si];
+      if (Math.abs(S.zc - player.z) > SEG_LEN * 1.6) continue;
+      for (var hi = 0; hi < S.hazards.length; hi++) {
+        var h = S.hazards[hi];
+        var wx = S.center + Math.sin(elapsed * h.w + h.ph) * h.amp;
+        h.obj.position.x = wx - S.center;
+        h.obj.rotation.z += dt * 3.2;
+        var dx = player.x - wx, dz = player.z - h.zc;
+        if (dx * dx + dz * dz < 1.02 * 1.02 && player.y < 1.3) {
+          spawnRing(new THREE.Vector3(player.x, player.y, player.z), M.spikeR, 0.6, 3.2, 0.5);
+          gameOver('SPIKED!');
+          return;
+        }
+      }
+      // collectibles
+      for (var ci = 0; ci < S.collects.length; ci++) {
+        var c = S.collects[ci];
+        if (!c.alive) continue;
+        c.obj.rotation.x += dt * 4;
+        c.obj.position.y = 0.78 + Math.sin(elapsed * 3 + c.ph) * 0.12;
+        var cdx = player.x - c.x, cdz = player.z - c.z;
+        if (cdx * cdx + cdz * cdz < 0.95 * 0.95) {
+          c.alive = false;
+          S.obj.remove(c.obj);
+          setScore(score + 50); bumpScore();
+          spawnRing(new THREE.Vector3(c.x, 0.5, c.z), M.cyan, 0.3, 1.8, 0.4);
+        }
+      }
+      // floaters bob
+      if (S.floaters) for (var fi = 0; fi < S.floaters.length; fi++) {
+        var f = S.floaters[fi];
+        f.position.y += Math.sin(elapsed * 2 + f.userData.bob) * 0.0015;
+        f.rotation.y += dt * 1.5;
+      }
+    }
+
+    // blue speed trail (the video's cyan arc)
+    trailTimer -= dt;
+    if (trailTimer <= 0 && speed > 10.5) {
+      trailTimer = 0.05;
+      var t = mesh(G.ring, M.trail.clone());
+      t.rotation.y = Math.PI / 2;
+      t.position.set(player.x, player.y, player.z + 0.45);
+      t.scale.setScalar(0.55);
+      scene.add(t);
+      fx.push({ obj: t, t: 0, life: 0.32, s0: 0.55, s1: 0.95, kind: 'trail' });
+    }
+  }
+
+  /* ============================== RENDER ============================== */
+  var camPos = new THREE.Vector3(0, 3.1, 7.5);
+  var lookPt = new THREE.Vector3();
+
+  function renderFrame(dt) {
+    // player mesh transform (axis along X => spin about X)
+    playerObj.position.set(player.x, player.y, player.z);
+    playerObj.rotation.set(player.roll, 0, 0);
+    if (state === 'falling') playerObj.rotation.z = player.fall * 2.2;
+    else playerObj.rotation.z = -player.vx * 0.03;   // tiny tactile lean
+
+    // camera follow + BANK THE WHOLE VIEW on steering
+    camPos.lerp(new THREE.Vector3(player.x * 0.55, 3.1, player.z + 7.5), 1 - Math.exp(-8 * dt));
+    camera.position.copy(camPos);
+    lookPt.set(player.x * 0.5, 0.9, player.z - 7);
+    camera.lookAt(lookPt);
+    camera.rotateZ(tilt);                 // <-- essential screen-tilt mechanic
+
+    // sun follows player for consistent soft shadows
+    sun.position.set(player.x + 9, 16, player.z + 7);
+    sun.target.position.set(player.x, 0, player.z - 4);
+    sun.target.updateMatrixWorld();
+
+    // effects
+    for (var i = fx.length - 1; i >= 0; i--) {
+      var e = fx[i];
+      e.t += dt;
+      var k = e.t / e.life;
+      if (k >= 1) { scene.remove(e.obj); fx.splice(i, 1); continue; }
+      e.obj.scale.setScalar(e.s0 + (e.s1 - e.s0) * k);
+      e.obj.material.opacity = (e.kind === 'trail' ? 0.5 : 0.8) * (1 - k);
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  /* ============================ MAIN LOOP ============================= */
+  var lastT = performance.now(), acc = 0, rafId = 0;
+  function loop(now) {
+    rafId = requestAnimationFrame(loop);
+    var dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    if (state === 'play' || state === 'falling') {
+      acc += dt;
+      while (acc >= FIXED_DT) { physicsStep(FIXED_DT); acc -= FIXED_DT; if (state === 'over') { acc = 0; break; } }
+    }
+    renderFrame(dt);
+  }
+
+  /* ============================== RESIZE ============================== */
+  function resize() {
+    var w = ROOT.clientWidth, h = ROOT.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* ============================== BOOT ================================ */
+  clearCourse();
+  camera.position.set(0, 3.1, 7.5);
+  camera.lookAt(0, 0.9, -6);
+  rafId = requestAnimationFrame(loop);
+
+  // tidy up if the host page navigates away
+  window.addEventListener('pagehide', function () {
+    cancelAnimationFrame(rafId);
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
+    window.removeEventListener('resize', resize);
+  });
+})();
+</script>
+</body>
+</html>

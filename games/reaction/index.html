@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Test de Réflexes</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:#0f0f18;color:#eee;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px;user-select:none;touch-action:manipulation}
+h1{margin:0;font-size:clamp(1.4rem,5vw,2rem);color:#ffd166}
+#pad{width:min(94vw,560px);height:min(55vh,340px);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;cursor:pointer;background:#2a2d55;transition:background .1s}
+#pad.wait{background:#b8323f}#pad.go{background:#2fbf6b}#pad.early{background:#c77d1e}
+#big{font-size:clamp(1.6rem,7vw,2.8rem);font-weight:800}
+#sub{opacity:.85;margin-top:6px}
+.hud{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.hud b{color:#7bf1a8}
+button{background:#ffd166;color:#222;border:0;border-radius:10px;padding:10px 26px;font-size:1.05rem;font-weight:700;cursor:pointer}
+</style></head><body>
+<h1>⚡ Test de Réflexes</h1>
+<div id="pad" tabindex="0"><div id="big">Cliquer pour commencer</div><div id="sub">Attends le vert, puis clique le plus vite possible (ou Espace)</div></div>
+<div class="hud"><span>Dernier : <b id="l">–</b></span><span>Moyenne : <b id="a">–</b></span><span>Meilleur : <b id="b">–</b></span><span>Essais : <b id="n">0</b></span></div>
+<button id="re">Rejouer</button>
+<script>
+const K='pz_reaction_best',$=id=>document.getElementById(id),pad=$('pad');
+let st='idle',tm=0,t0=0,times=[],best=null;
+try{const v=localStorage.getItem(K);if(v)best=+v}catch(e){}
+function show(c,b,s){pad.className=c;$('big').textContent=b;$('sub').textContent=s}
+function stats(){
+  $('n').textContent=times.length;
+  $('a').textContent=times.length?Math.round(times.reduce((x,y)=>x+y,0)/times.length)+' ms':'–';
+  $('b').textContent=best!=null?best+' ms':'–';
+  $('l').textContent=times.length?times[times.length-1]+' ms':'–';
+}
+function begin(){
+  st='wait';show('wait','Attends le vert…','Ne clique pas encore !');
+  tm=setTimeout(()=>{st='go';t0=performance.now();show('go','CLIQUE !','')},1000+Math.random()*3500);
+}
+function act(){
+  if(st==='idle'||st==='result'||st==='early'){begin()}
+  else if(st==='wait'){clearTimeout(tm);st='early';show('early','Trop tôt !','Clique pour réessayer')}
+  else if(st==='go'){
+    const ms=Math.round(performance.now()-t0);times.push(ms);
+    if(best==null||ms<best){best=ms;try{localStorage.setItem(K,best)}catch(e){}}
+    st='result';show('',ms+' ms','Clique pour continuer');stats();
+  }
+}
+pad.addEventListener('pointerdown',e=>{e.preventDefault();act()});
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();if(!e.repeat)act()}});
+$('re').onclick=()=>{clearTimeout(tm);times=[];st='idle';show('','Cliquer pour commencer','Attends le vert, puis clique le plus vite possible (ou Espace)');stats()};
+$('re').addEventListener('keydown',e=>{if(e.code==='Space')e.stopPropagation()});
+stats();
+</script></body></html>

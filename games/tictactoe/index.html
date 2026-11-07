@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tic-Tac-Toe</title>
+<style>
+html,body{margin:0;height:100%;background:#071428;color:#bae6fd;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#hud{margin-bottom:12px;font-size:17px;display:flex;gap:18px;align-items:center}
+#g{display:grid;grid-template-columns:repeat(3,100px);gap:8px}
+.c{width:100px;height:100px;background:#0c2a4d;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:800;cursor:pointer}
+.c:hover{background:#12407a}
+.X{color:#38bdf8}.O{color:#fb7185}
+button{padding:8px 18px;border:0;border-radius:8px;background:#0ea5e9;color:#fff;font-weight:700;cursor:pointer}
+#msg{height:28px;margin-top:14px;font-weight:700;font-size:18px}
+</style></head><body>
+<div id="hud"><span>Toi ❌ : <b id="w">0</b></span><span>IA ⭕ : <b id="l">0</b></span><span>Nuls : <b id="d">0</b></span><button id="r">Rejouer</button></div>
+<div id="g"></div><div id="msg"></div>
+<script>
+var L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+var b,over,sc={w:0,l:0,d:0},g=document.getElementById('g');
+function win(s){for(var i=0;i<8;i++){var l=L[i];if(s[l[0]]&&s[l[0]]==s[l[1]]&&s[l[0]]==s[l[2]])return s[l[0]]}return s.indexOf('')<0?'D':null}
+function mm(s,p){
+  var w=win(s);if(w=='O')return 1;if(w=='X')return -1;if(w=='D')return 0;
+  var best=p=='O'?-2:2;
+  for(var i=0;i<9;i++)if(!s[i]){s[i]=p;var v=mm(s,p=='O'?'X':'O');s[i]='';best=p=='O'?Math.max(best,v):Math.min(best,v)}
+  return best;
+}
+function ai(){
+  var bm=-1,bv=-2;
+  for(var i=0;i<9;i++)if(!b[i]){b[i]='O';var v=mm(b,'X');b[i]='';if(v>bv){bv=v;bm=i}}
+  b[bm]='O';
+}
+function draw(){
+  g.innerHTML='';
+  b.forEach(function(v,i){var d=document.createElement('div');d.className='c '+v;d.textContent=v=='X'?'✕':v=='O'?'○':'';d.onclick=function(){play(i)};g.appendChild(d)});
+  document.getElementById('w').textContent=sc.w;document.getElementById('l').textContent=sc.l;document.getElementById('d').textContent=sc.d;
+}
+function end(){
+  var w=win(b);if(!w)return false;
+  over=true;var m=document.getElementById('msg');
+  if(w=='X'){sc.w++;m.textContent='🎉 Tu as gagné !'}else if(w=='O'){sc.l++;m.textContent='L\'IA gagne.'}else{sc.d++;m.textContent='Match nul.'}
+  draw();return true;
+}
+function play(i){
+  if(over||b[i])return;
+  b[i]='X';if(end())return;
+  ai();if(end())return;draw();
+}
+function start(){b=['','','','','','','','',''];over=false;document.getElementById('msg').textContent='';draw()}
+document.getElementById('r').onclick=start;
+start();
+</script></body></html>

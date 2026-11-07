@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Neon Pong</title>
+<style>
+body{margin:0;background:#0a0a18;color:#e8ecff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;user-select:none}
+h1{font-size:1.4rem;margin:12px 0 4px;color:#ff4fd8;text-shadow:0 0 10px #ff4fd8}
+canvas{background:#10102a;border:2px solid #3a2a80;border-radius:10px;max-width:96vw;max-height:70vh;touch-action:none}
+button{margin:10px;padding:10px 22px;font-size:1rem;background:#4ff0ff;color:#0a0a18;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
+p{margin:4px;font-size:.85rem;opacity:.7}
+</style></head><body>
+<h1>Neon Pong</h1>
+<canvas id="c" width="640" height="400"></canvas>
+<div><button id="r">Rejouer</button></div>
+<p>Souris / toucher / flèches haut-bas — premier à 7 · Victoires : <span id="w">0</span></p>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d'),W=640,H=400,PH=70;
+let wins=0;try{wins=+localStorage.getItem('pz_pong')||0}catch(e){}
+document.getElementById('w').textContent=wins;
+let py,ay,b,ps,as,over,keys={},msg;
+function serve(d){b={x:W/2,y:H/2,vx:5*d,vy:(Math.random()*4-2)}}
+function reset(){py=ay=H/2;ps=as=0;over=false;msg='';serve(1)}
+function move(cy){const r=cv.getBoundingClientRect();py=Math.max(PH/2,Math.min(H-PH/2,(cy-r.top)*H/r.height))}
+cv.addEventListener('pointermove',e=>move(e.clientY));
+cv.addEventListener('pointerdown',e=>{e.preventDefault();move(e.clientY);if(over)reset()});
+addEventListener('keydown',e=>{if(e.key.startsWith('Arrow')){e.preventDefault();keys[e.key]=1}});
+addEventListener('keyup',e=>delete keys[e.key]);
+function hit(px,dir){
+  if(b.y>px-PH/2-6&&b.y<px+PH/2+6){
+    b.vx=-b.vx*1.06;b.vy=(b.y-px)/(PH/2)*6;b.x=dir===1?24+8:W-24-8;return true}
+}
+function update(){
+  if(over)return;
+  if(keys.ArrowUp)py-=7;if(keys.ArrowDown)py+=7;
+  py=Math.max(PH/2,Math.min(H-PH/2,py));
+  ay+=Math.max(-4.2,Math.min(4.2,(b.y-ay)*(b.vx>0?.9:.2)));
+  ay=Math.max(PH/2,Math.min(H-PH/2,ay));
+  b.x+=b.vx;b.y+=b.vy;
+  if(b.y<8||b.y>H-8){b.vy=-b.vy;b.y=Math.max(8,Math.min(H-8,b.y))}
+  if(b.vx<0&&b.x<32&&b.x>10)hit(py,1);
+  if(b.vx>0&&b.x>W-32&&b.x<W-10)hit(ay,-1);
+  if(Math.abs(b.vx)>11)b.vx=Math.sign(b.vx)*11;
+  if(b.x<-10){as++;serve(1)}
+  if(b.x>W+10){ps++;serve(-1)}
+  if(ps>=7||as>=7){over=true;msg=ps>=7?'Victoire !':'Défaite…';
+    if(ps>=7){wins++;try{localStorage.setItem('pz_pong',wins)}catch(e){}document.getElementById('w').textContent=wins}}
+}
+function draw(){
+  x.fillStyle='#10102a';x.fillRect(0,0,W,H);
+  x.strokeStyle='#3a2a80';x.setLineDash([10,10]);x.beginPath();x.moveTo(W/2,0);x.lineTo(W/2,H);x.stroke();x.setLineDash([]);
+  x.shadowBlur=15;
+  x.fillStyle=x.shadowColor='#4ff0ff';x.fillRect(16,py-PH/2,10,PH);
+  x.fillStyle=x.shadowColor='#ff4fd8';x.fillRect(W-26,ay-PH/2,10,PH);
+  x.fillStyle=x.shadowColor='#fff';x.beginPath();x.arc(b.x,b.y,8,0,7);x.fill();
+  x.shadowBlur=0;
+  x.fillStyle='#fff';x.font='bold 40px system-ui';x.textAlign='center';
+  x.fillText(ps,W/2-60,50);x.fillText(as,W/2+60,50);
+  if(over){x.fillStyle='rgba(10,10,24,.75)';x.fillRect(0,130,W,130);
+    x.fillStyle='#4ff0ff';x.font='bold 36px system-ui';x.fillText(msg,W/2,195);
+    x.fillStyle='#fff';x.font='16px system-ui';x.fillText('Touchez ou cliquez sur Rejouer',W/2,230)}
+}
+function loop(){update();draw();requestAnimationFrame(loop)}
+document.getElementById('r').onclick=e=>{reset();e.target.blur()};
+reset();loop();
+</script></body></html>

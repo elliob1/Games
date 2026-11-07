@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Desert Runner</title>
+<style>
+body{margin:0;background:#1a0f12;color:#ffe9d0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;user-select:none;touch-action:manipulation}
+h1{font-size:1.4rem;margin:12px 0 4px;color:#ff9f43}
+canvas{background:#2a1a1c;border:2px solid #6b3a2a;border-radius:10px;max-width:96vw;touch-action:none}
+button{margin:10px;padding:10px 22px;font-size:1rem;background:#ff9f43;color:#1a0f12;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
+p{margin:4px;font-size:.85rem;opacity:.7}
+</style></head><body>
+<h1>Desert Runner</h1>
+<canvas id="c" width="640" height="280"></canvas>
+<div><button id="r">Rejouer</button></div>
+<p>Espace / flèche haut / clic / toucher pour sauter</p>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d'),W=640,H=280,G=220;
+let best=0;try{best=+localStorage.getItem('pz_runner')||0}catch(e){}
+let p,obs,sp,score,state,t,nxt,ot;
+function reset(){p={y:G-30,v:0};obs=[];sp=5;score=0;state='ready';t=0;nxt=60}
+function jump(){
+  if(state==='over'){if(performance.now()-ot>400)reset();return}
+  if(state==='ready')state='play';
+  if(p.y>=G-30)p.v=-11.5;
+}
+function die(){state='over';ot=performance.now();const s=Math.floor(score);if(s>best){best=s;try{localStorage.setItem('pz_runner',best)}catch(e){}}}
+function update(){
+  t++;if(state!=='play')return;
+  score+=sp/30;sp+=.0025;
+  p.v+=.62;p.y=Math.min(G-30,p.y+p.v);if(p.y>=G-30)p.v=0;
+  if(--nxt<=0){const n=1+(Math.random()<.35),h=30+Math.random()*30;
+    for(let i=0;i<n;i++)obs.push({x:W+i*26,w:20,h});
+    nxt=Math.max(35,(70+Math.random()*60)*5/sp)}
+  for(const o of obs){o.x-=sp;
+    if(o.x<46+28&&o.x+o.w>46&&p.y+30>G-o.h+4)die()}
+  obs=obs.filter(o=>o.x>-40);
+}
+function draw(){
+  x.fillStyle='#2a1a1c';x.fillRect(0,0,W,H);
+  x.fillStyle='#ff9f43';x.beginPath();x.arc(540,60,26,0,7);x.fill();
+  x.fillStyle='#4a2a24';x.fillRect(0,G,W,H-G);
+  x.fillStyle='#6b3a2a';for(let i=0;i<20;i++)x.fillRect(((i*70-t*sp)%W+W)%W,G+12+(i%3)*14,20,3);
+  x.fillStyle='#7ddc6a';
+  for(const o of obs){x.fillRect(o.x+6,G-o.h,8,o.h);x.fillRect(o.x,G-o.h*.65,6,6);x.fillRect(o.x,G-o.h*.65-14,5,14);x.fillRect(o.x+14,G-o.h*.5,6,6);x.fillRect(o.x+15,G-o.h*.5-12,5,12)}
+  x.save();x.translate(46,p.y);x.fillStyle='#4ff0ff';x.fillRect(0,0,30,30);
+  x.fillStyle='#1a0f12';x.fillRect(18,6,6,6);
+  const l=state==='play'&&p.y>=G-30?Math.sin(t/2)*5:0;
+  x.fillStyle='#2fb8c4';x.fillRect(4+l,30,8,4);x.fillRect(18-l,30,8,4);x.restore();
+  x.fillStyle='#ffe9d0';x.font='bold 18px system-ui';x.textAlign='right';
+  x.fillText('Score '+Math.floor(score)+'   Record '+best,W-14,28);
+  if(state!=='play'){x.textAlign='center';x.fillStyle='#ff9f43';x.font='bold 28px system-ui';
+    x.fillText(state==='ready'?'Prêt ?':'Perdu !',W/2,110);x.fillStyle='#ffe9d0';x.font='15px system-ui';
+    x.fillText(state==='ready'?'Touchez ou appuyez sur espace':'Touchez pour rejouer',W/2,140)}
+}
+function loop(){update();draw();requestAnimationFrame(loop)}
+addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(!e.repeat)jump()}});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();jump()});
+document.getElementById('r').onclick=e=>{reset();e.target.blur()};
+reset();loop();
+</script></body></html>

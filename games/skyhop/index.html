@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Sky Hop</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:#0b0a14;color:#eee;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px;user-select:none;touch-action:none}
+h1{margin:0;font-size:clamp(1.3rem,5vw,1.8rem);color:#7de0ff}
+.hud{display:flex;gap:20px}.hud b{color:#7bf1a8}
+canvas{height:min(72vh,600px);aspect-ratio:9/14;max-width:94vw;background:linear-gradient(#10224a,#2a1750);border-radius:12px;touch-action:none}
+button{background:#7de0ff;color:#222;border:0;border-radius:10px;padding:9px 24px;font-size:1.05rem;font-weight:700;cursor:pointer}
+small{color:#889}
+</style></head><body>
+<h1>🚀 Sky Hop</h1>
+<div class="hud"><span>Score : <b id="s">0</b></span><span>Record : <b id="r">0</b></span></div>
+<canvas id="c" width="360" height="560"></canvas>
+<small>Flèches / A-D, souris ou glissement du doigt</small>
+<button id="re">Rejouer</button>
+<script>
+const K='pz_skyhop_best',cv=document.getElementById('c'),g=cv.getContext('2d'),W=360,H=560,PW=64,PH=12;
+let P,plats,topY,score,over,keys={},tx=null,best=0,last=performance.now(),stars=[];
+try{best=+localStorage.getItem(K)||0}catch(e){}
+document.getElementById('r').textContent=best;
+for(let i=0;i<40;i++)stars.push([Math.random()*W,Math.random()*H,Math.random()*1.5+.5]);
+function addPlat(){
+  const gap=Math.min(115,55+score/40+Math.random()*30);
+  topY-=gap;plats.push({x:Math.random()*(W-PW),y:topY,hue:Math.floor(Math.random()*60)+150});
+}
+function reset(){
+  P={x:W/2,y:H-100,vx:0,vy:-11,r:14};plats=[{x:W/2-PW/2,y:H-60,hue:180}];topY=H-60;score=0;over=false;tx=null;
+  while(topY>-60)addPlat();
+  document.getElementById('s').textContent=0;
+}
+function step(k){
+  let d=0;if(keys.ArrowLeft||keys.a)d-=1;if(keys.ArrowRight||keys.d)d+=1;
+  if(d)P.vx+=(d*5.2-P.vx)*0.25*k;
+  else if(tx!==null)P.vx=Math.max(-8,Math.min(8,(tx-P.x)*0.2));
+  else P.vx*=0.85;
+  P.x+=P.vx*k;if(P.x<-P.r)P.x=W+P.r;if(P.x>W+P.r)P.x=-P.r;
+  const oy=P.y;P.vy+=0.4*k;P.y+=P.vy*k;
+  if(P.vy>0)for(const p of plats){
+    if(P.x+P.r*0.6>p.x&&P.x-P.r*0.6<p.x+PW&&oy+P.r<=p.y+2&&P.y+P.r>=p.y){P.y=p.y-P.r;P.vy=-11.5;break}
+  }
+  if(P.y<H*0.4){const dy=H*0.4-P.y;P.y=H*0.4;plats.forEach(p=>p.y+=dy);topY+=dy;stars.forEach(s=>{s[1]=(s[1]+dy*s[2]*0.2)%H});
+    score+=Math.round(dy);document.getElementById('s').textContent=score}
+  plats=plats.filter(p=>p.y<H+20);
+  while(topY>-60)addPlat();
+  if(P.y-P.r>H){over=true;if(score>best){best=score;try{localStorage.setItem(K,best)}catch(e){}document.getElementById('r').textContent=best}}
+}
+function draw(){
+  g.clearRect(0,0,W,H);g.fillStyle='#fff8';stars.forEach(s=>g.fillRect(s[0],s[1],s[2],s[2]));
+  plats.forEach(p=>{g.fillStyle='hsl('+p.hue+',65%,55%)';g.beginPath();g.roundRect(p.x,p.y,PW,PH,6);g.fill()});
+  g.save();g.translate(P.x,P.y);g.rotate(P.vx*0.03);
+  g.fillStyle='#ffd166';g.beginPath();g.moveTo(0,-P.r-4);g.lineTo(P.r+2,P.r);g.lineTo(-P.r-2,P.r);g.closePath();g.fill();
+  g.fillStyle='#222';g.fillRect(-6,-2,4,6);g.fillRect(2,-2,4,6);
+  g.restore();
+  if(over){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,H/2-70,W,130);g.fillStyle='#fff';g.textAlign='center';g.font='bold 34px system-ui';
+    g.fillText('Game over',W/2,H/2-15);g.font='20px system-ui';g.fillText('Score : '+score,W/2,H/2+25)}
+}
+function loop(n){
+  const k=Math.min(2,(n-last)/16.667);last=n;
+  if(!over)step(k);draw();requestAnimationFrame(loop);
+}
+addEventListener('keydown',e=>{keys[e.key]=1;if(e.key.startsWith('Arrow'))e.preventDefault()});
+addEventListener('keyup',e=>{keys[e.key]=0});
+function pt(e){const r=cv.getBoundingClientRect();tx=(e.clientX-r.left)/r.width*W}
+cv.addEventListener('pointerdown',e=>{pt(e)});
+cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons||e.pointerType==='touch')pt(e)});
+cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')tx=null});
+cv.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')tx=null});
+document.getElementById('re').onclick=e=>{reset();e.target.blur()};
+reset();requestAnimationFrame(loop);
+</script></body></html>
