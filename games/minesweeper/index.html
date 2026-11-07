@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Démineur</title>
+<style>
+:root{--bg:#0f1220;--pn:#1a1f36;--ac:#5eead4;--tx:#e6e9f5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#1b2040,var(--bg));color:var(--tx);font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+h1{margin:6px 0;font-size:1.5rem;letter-spacing:.08em;color:var(--ac)}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;width:min(94vw,420px);margin:6px 0}
+.stat{background:var(--pn);padding:6px 12px;border-radius:8px;font-variant-numeric:tabular-nums;min-width:70px;text-align:center}
+button{background:var(--ac);color:#06201c;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:1rem}
+button.off{background:var(--pn);color:var(--tx)}
+#b{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;width:min(94vw,420px);background:var(--pn);padding:6px;border-radius:12px;touch-action:manipulation}
+.c{aspect-ratio:1;background:#2a3157;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(14px,4.6vw,22px);cursor:pointer}
+.c:hover{background:#353d6a}
+.c.r{background:#10142a;cursor:default}
+.c.f{color:#fb7185}
+.c.x{background:#7f1d3a;color:#fff}
+.c.w{background:#3a2a40;color:#fb7185}
+#msg{height:1.6em;margin:8px;font-weight:700;color:var(--ac)}
+small{opacity:.6;text-align:center;max-width:420px}
+</style></head><body>
+<h1>DÉMINEUR</h1>
+<div class="bar"><div class="stat" id="mc">Mines 10</div><button id="rj">Rejouer</button><div class="stat" id="tm">0 s</div></div>
+<div class="bar"><button id="md" class="off">Mode : révéler</button><div class="stat" id="bs">Record --</div></div>
+<div id="b"></div>
+<div id="msg"></div>
+<small>Clic = révéler, clic droit ou appui long = drapeau. Le premier clic est toujours sûr.</small>
+<script>
+const N=9,M=10,$=s=>document.querySelector(s),K='pz_minesweeper_best';
+let g,over,started,tm,timer,fl,mode=0,lp=0,lpt;
+const cells=[];
+function nb(i){const r=i/N|0,c=i%N,o=[];for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){if(!a&&!b)continue;const y=r+a,x=c+b;if(y>=0&&y<N&&x>=0&&x<N)o.push(y*N+x)}return o}
+function best(){try{return +localStorage.getItem(K)||0}catch(e){return 0}}
+function init(){
+  clearInterval(timer);
+  g=Array.from({length:N*N},()=>({m:0,r:0,f:0,n:0}));
+  over=0;started=0;tm=0;fl=0;$('#msg').textContent='';
+  draw();
+}
+function build(){
+  const B=$('#b');
+  for(let i=0;i<N*N;i++){
+    const d=document.createElement('div');d.className='c';
+    d.onpointerdown=e=>{e.preventDefault();lp=0;clearTimeout(lpt);
+      if(e.button===2){lp=1;flag(i);return}
+      lpt=setTimeout(()=>{lp=1;flag(i);if(navigator.vibrate)navigator.vibrate(30)},450)};
+    d.onpointerup=e=>{if(e.button===2)return;clearTimeout(lpt);if(!lp){mode?flag(i):reveal(i)}lp=0};
+    d.onpointerleave=()=>clearTimeout(lpt);
+    d.oncontextmenu=e=>e.preventDefault();
+    B.appendChild(d);cells.push(d);
+  }
+}
+function flag(i){
+  if(over)return;const c=g[i];if(c.r)return;
+  c.f=!c.f;fl+=c.f?1:-1;draw();
+}
+function reveal(i){
+  if(over||g[i].r||g[i].f)return;
+  if(!started){
+    started=1;const ban=new Set([i,...nb(i)]);let n=0;
+    while(n<M){const k=Math.random()*N*N|0;if(!ban.has(k)&&!g[k].m){g[k].m=1;n++}}
+    g.forEach((c,k)=>c.n=nb(k).filter(j=>g[j].m).length);
+    t0=Date.now();timer=setInterval(()=>{tm=(Date.now()-t0)/1000|0;$('#tm').textContent=tm+' s'},250);
+  }
+  if(g[i].m){g[i].r=1;g[i].boom=1;lose();return}
+  const st=[i];
+  while(st.length){
+    const k=st.pop(),c=g[k];if(c.r||c.f)continue;c.r=1;
+    if(!c.n)nb(k).forEach(j=>{if(!g[j].r)st.push(j)});
+  }
+  if(g.filter(c=>c.r).length===N*N-M)win();
+  draw();
+}
+let t0=0;
+function lose(){over=1;clearInterval(timer);g.forEach(c=>{if(c.m)c.r=1});$('#msg').textContent='Boum ! Perdu.';draw()}
+function win(){
+  over=1;clearInterval(timer);tm=(Date.now()-t0)/1000|0;
+  g.forEach(c=>{if(c.m&&!c.f){c.f=1;fl++}});
+  let m='Bravo, victoire en '+tm+' s !';
+  const b=best();if(!b||tm<b){try{localStorage.setItem(K,tm)}catch(e){}m+=' Nouveau record !'}
+  $('#msg').textContent=m;
+}
+const COL=['','#60a5fa','#4ade80','#f87171','#a78bfa','#fb923c','#22d3ee','#f472b6','#e5e7eb'];
+function draw(){
+  g.forEach((c,i)=>{
+    const d=cells[i];let cl='c',t='';
+    if(c.r){cl+=' r';if(c.m){t='✹';cl+=c.boom?' x':' f'}else if(c.n){t=c.n;d.style.color=COL[c.n]}}
+    else if(c.f){t='⚑';cl+=' f';if(over&&!c.m){cl+=' w'}}
+    if(!c.r)d.style.color='';
+    d.className=cl;d.textContent=t;
+  });
+  $('#mc').textContent='Mines '+(M-fl);$('#tm').textContent=tm+' s';
+  const b=best();$('#bs').textContent='Record '+(b?b+' s':'--');
+}
+$('#rj').onclick=init;
+$('#md').onclick=e=>{mode=!mode;e.target.classList.toggle('off',!mode);e.target.textContent='Mode : '+(mode?'drapeau':'révéler')};
+build();init();
+</script></body></html>

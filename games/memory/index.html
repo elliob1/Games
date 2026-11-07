@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory</title>
+<style>
+html,body{margin:0;height:100%;background:#1a0b2e;color:#f5d0fe;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#hud{margin-bottom:12px;font-size:17px;display:flex;gap:18px;align-items:center}
+#g{display:grid;grid-template-columns:repeat(4,76px);gap:10px}
+.k{width:76px;height:76px;perspective:400px;cursor:pointer}
+.in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.k.f .in{transform:rotateY(180deg)}
+.f1,.f2{position:absolute;inset:0;border-radius:10px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;font-size:36px}
+.f1{background:linear-gradient(135deg,#a855f7,#ec4899)}
+.f2{background:#2e1065;transform:rotateY(180deg)}
+.k.m .f2{background:#14532d}
+button{padding:8px 18px;border:0;border-radius:8px;background:#ec4899;color:#fff;font-weight:700;cursor:pointer}
+#msg{height:26px;margin-top:12px;font-weight:700}
+</style></head><body>
+<div id="hud"><span>Coups : <b id="m">0</b></span><span>Meilleur : <b id="b">-</b></span><button id="r">Rejouer</button></div>
+<div id="g"></div><div id="msg"></div>
+<script>
+var E=['🍎','🍌','🍇','🍒','🍉','🥝','🍋','🍓'];
+var g=document.getElementById('g'),first=null,lock=false,moves,found,best=localStorage.getItem('pz_mem');
+if(best)document.getElementById('b').textContent=best;
+function start(){
+  var a=E.concat(E).sort(function(){return Math.random()-.5});
+  g.innerHTML='';moves=0;found=0;first=null;lock=false;
+  document.getElementById('m').textContent=0;document.getElementById('msg').textContent='';
+  a.forEach(function(e){
+    var k=document.createElement('div');k.className='k';k.dataset.e=e;
+    k.innerHTML='<div class="in"><div class="f1"></div><div class="f2">'+e+'</div></div>';
+    k.onclick=function(){flip(k)};g.appendChild(k);
+  });
+}
+function flip(k){
+  if(lock||k.classList.contains('f'))return;
+  k.classList.add('f');
+  if(!first){first=k;return}
+  moves++;document.getElementById('m').textContent=moves;
+  if(first.dataset.e==k.dataset.e){
+    first.classList.add('m');k.classList.add('m');first=null;found++;
+    if(found==E.length){
+      document.getElementById('msg').textContent='🎉 Bravo en '+moves+' coups !';
+      if(!best||moves<+best){best=moves;localStorage.setItem('pz_mem',best);document.getElementById('b').textContent=best}
+    }
+  }else{
+    lock=true;var a=first;first=null;
+    setTimeout(function(){a.classList.remove('f');k.classList.remove('f');lock=false},750);
+  }
+}
+document.getElementById('r').onclick=start;
+start();
+</script></body></html>

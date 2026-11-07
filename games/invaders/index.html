@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Star Defender</title>
+<style>
+body{margin:0;background:#070b16;color:#e8ecff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;user-select:none;touch-action:manipulation}
+h1{font-size:1.4rem;margin:12px 0 4px;color:#ffd166}
+canvas{background:#0c1226;border:2px solid #26336b;border-radius:10px;max-width:96vw;max-height:66vh}
+.b{display:flex;gap:10px;margin:8px}
+button{padding:12px 20px;font-size:1.1rem;background:#ffd166;color:#070b16;border:0;border-radius:8px;cursor:pointer;font-weight:bold;touch-action:manipulation}
+p{margin:4px;font-size:.85rem;opacity:.7}
+</style></head><body>
+<h1>Star Defender</h1>
+<canvas id="c" width="480" height="480"></canvas>
+<div class="b"><button id="L">◀</button><button id="F">Tir</button><button id="R">▶</button><button id="rp">Rejouer</button></div>
+<p>Flèches + espace · ou boutons tactiles</p>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d'),W=480,H=480;
+let best=0;try{best=+localStorage.getItem('pz_invaders')||0}catch(e){}
+let px,sh,en,dir,eb,lives,score,wave,over,cd,k={},t,spd;
+function spawn(){en=[];for(let r=0;r<4;r++)for(let c=0;c<8;c++)en.push({x:50+c*48,y:50+r*38,r});dir=1;spd=.5+wave*.18}
+function reset(){px=W/2;sh=[];eb=[];lives=3;score=0;wave=1;over=false;cd=0;t=0;spawn()}
+function end(){over=true;if(score>best){best=score;try{localStorage.setItem('pz_invaders',best)}catch(e){}}}
+addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Space'].includes(e.code)){e.preventDefault();k[e.code]=1}});
+addEventListener('keyup',e=>delete k[e.code]);
+for(const [id,key] of [['L','ArrowLeft'],['R','ArrowRight'],['F','Space']]){
+  const b=document.getElementById(id);
+  b.addEventListener('pointerdown',e=>{e.preventDefault();k[key]=1});
+  for(const ev of ['pointerup','pointerleave','pointercancel'])b.addEventListener(ev,()=>delete k[key]);
+}
+function update(){
+  if(over)return;t++;
+  if(k.ArrowLeft)px-=4;if(k.ArrowRight)px+=4;px=Math.max(20,Math.min(W-20,px));
+  if(cd>0)cd--;
+  if(k.Space&&cd===0){sh.push({x:px,y:H-50});cd=18}
+  for(const s of sh)s.y-=7;sh=sh.filter(s=>s.y>-10);
+  let edge=false;
+  for(const e of en){e.x+=dir*spd*(1+(32-en.length)*.03);if(e.x<20||e.x>W-20)edge=true}
+  if(edge){dir=-dir;for(const e of en){e.y+=14;e.x+=dir*3}}
+  if(en.length&&Math.random()<.02+wave*.004){const e=en[Math.random()*en.length|0];eb.push({x:e.x,y:e.y+10})}
+  for(const b of eb)b.y+=3+wave*.2;
+  eb=eb.filter(b=>{
+    if(b.y>H-40&&b.y<H-14&&Math.abs(b.x-px)<18){lives--;if(lives<=0)end();return false}
+    return b.y<H});
+  for(const s of sh)for(const e of en)if(!e.d&&Math.abs(s.x-e.x)<15&&Math.abs(s.y-e.y)<12){e.d=1;s.y=-99;score+=10*(4-e.r)}
+  en=en.filter(e=>!e.d);
+  if(en.some(e=>e.y>H-60)){lives=0;end()}
+  if(!en.length){wave++;spawn();eb=[]}
+}
+const cols=['#ff6b6b','#ff9f43','#4ff0ff','#7df9c8'];
+function draw(){
+  x.fillStyle='#0c1226';x.fillRect(0,0,W,H);
+  x.fillStyle='#fff3';for(let i=0;i<30;i++)x.fillRect((i*97)%W,(i*53+t*.3*(1+i%3))%H,1.5,1.5);
+  for(const e of en){x.fillStyle=cols[e.r];x.save();x.translate(e.x,e.y);
+    if(e.r%2){x.beginPath();x.moveTo(0,-11);x.lineTo(14,8);x.lineTo(-14,8);x.fill()}
+    else{x.fillRect(-13,-8,26,16);x.fillStyle='#0c1226';x.fillRect(-7,-3,5,5);x.fillRect(2,-3,5,5)}
+    x.restore()}
+  x.fillStyle='#ffd166';x.beginPath();x.moveTo(px,H-52);x.lineTo(px+18,H-20);x.lineTo(px-18,H-20);x.fill();
+  x.fillStyle='#fff';for(const s of sh)x.fillRect(s.x-1.5,s.y,3,12);
+  x.fillStyle='#ff4fd8';for(const b of eb)x.fillRect(b.x-2,b.y,4,12);
+  x.fillStyle='#fff';x.font='16px system-ui';x.textAlign='left';x.fillText('Score '+score+'   Vague '+wave,10,22);
+  x.textAlign='right';x.fillText('Vies '+'♥'.repeat(Math.max(0,lives))+'   Record '+best,W-10,22);
+  if(over){x.fillStyle='rgba(7,11,22,.8)';x.fillRect(0,180,W,120);x.textAlign='center';
+    x.fillStyle='#ffd166';x.font='bold 32px system-ui';x.fillText('Partie terminée',W/2,230);
+    x.fillStyle='#fff';x.font='16px system-ui';x.fillText('Score : '+score+' — cliquez sur Rejouer',W/2,265)}
+}
+function loop(){update();draw();requestAnimationFrame(loop)}
+document.getElementById('rp').onclick=e=>{reset();e.target.blur()};
+reset();loop();
+</script></body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Évasion Maison Hantée</title>
+<style>
+html,body{margin:0;background:#07070c;color:#c9d1d9;font-family:system-ui,sans-serif;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none}
+h1{font-size:20px;margin:8px 0 2px;color:#9fb4d8}
+canvas{max-width:96vw;height:auto;background:#000;border:2px solid #21262d;border-radius:8px;display:block;margin:6px auto;touch-action:none}
+button{background:#21262d;color:#e6edf3;border:0;border-radius:8px;padding:8px 14px;font-size:14px;margin:2px}
+p{font-size:13px;color:#6e7681;margin:4px}
+</style></head><body>
+<h1>Évasion Maison Hantée</h1>
+<canvas id="c" width="640" height="480"></canvas>
+<div><button id="re">Rejouer</button><button id="snd">Son : oui</button></div>
+<p>WASD / flèches (ou glisser le doigt) pour bouger. Trouve 3 clés, puis la porte. Le fantôme te traque s'il te voit.</p>
+<script>
+const cv=document.getElementById('c'),g=cv.getContext('2d'),W=640,H=480,TS=32,C=20,R=15;
+const MAP=["####################","#......#.....#.....#","#......#.....#.....#","#............#.....#","#......#...........#","####.#######.###.###","#..................#","#..................X","###.####.####.######","#.....#.....#......#","#.....#.....#......#","#..................#","#.....#.....#......#","#.....#.....#......#","####################"];
+const wallc=(x,y)=>{const r=MAP[y];return !r||r[x]===undefined||r[x]==='#'||r[x]==='X'};
+const solid=(x,y)=>wallc(x,y)&&!(MAP[y]&&MAP[y][x]==='X'&&keys>=3);
+const KEYPOS=[[3,2],[16,2],[16,12]],WP=[[3,2],[10,2],[16,2],[10,6],[16,6],[3,6],[3,11],[9,12],[16,11],[10,4]];
+const lc=document.createElement('canvas');lc.width=W;lc.height=H;const lg=lc.getContext('2d');
+let pl,gh,got,keys,state='title',face=0,msg='',msgT=0,time=0,joy=null,beepT=0,snd=true,AC=null;const K={};
+function reset(){pl={x:3.5*TS,y:10.5*TS};gh={x:16.5*TS,y:3.5*TS,path:[],mode:'patrol',timer:0,rep:0};got=[false,false,false];keys=0;time=0;msg='';state='play'}
+function beep(f,d,v){if(!snd)return;try{AC=AC||new AudioContext();const o=AC.createOscillator(),a=AC.createGain();o.frequency.value=f;o.type='sine';a.gain.value=v||.05;a.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(a);a.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function los(ax,ay,bx,by){const d=Math.hypot(bx-ax,by-ay),n=Math.ceil(d/4);for(let i=1;i<n;i++){const t=i/n;if(wallc(Math.floor((ax+(bx-ax)*t)/TS),Math.floor((ay+(by-ay)*t)/TS)))return false}return true}
+function bfs(s,t){const k=(x,y)=>y*C+x,prev=new Map([[k(s[0],s[1]),null]]),q=[s];let ok=false;
+ while(q.length){const c=q.shift();if(c[0]==t[0]&&c[1]==t[1]){ok=true;break}
+  for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=c[0]+a,ny=c[1]+b;if(wallc(nx,ny)||prev.has(k(nx,ny)))continue;prev.set(k(nx,ny),c);q.push([nx,ny])}}
+ if(!ok)return[];const p=[];let c=t;while(c&&!(c[0]==s[0]&&c[1]==s[1])){p.unshift(c);c=prev.get(k(c[0],c[1]))}return p}
+function move(o,dx,dy,r){let nx=o.x+dx;if(!hit(nx,o.y,r))o.x=nx;let ny=o.y+dy;if(!hit(o.x,ny,r))o.y=ny}
+function hit(x,y,r){for(const[a,b]of[[-r,-r],[r,-r],[-r,r],[r,r]])if(solid(Math.floor((x+a)/TS),Math.floor((y+b)/TS)))return true;return false}
+function say(t){msg=t;msgT=2.5}
+function update(dt){
+ if(msgT>0)msgT-=dt;
+ if(state!='play')return;
+ time+=dt;
+ let vx=(K.ArrowRight||K.KeyD?1:0)-(K.ArrowLeft||K.KeyA||K.KeyQ?1:0),vy=(K.ArrowDown||K.KeyS?1:0)-(K.ArrowUp||K.KeyW||K.KeyZ?1:0);
+ if(joy){const dx=joy.x-joy.ox,dy=joy.y-joy.oy,d=Math.hypot(dx,dy);if(d>8){vx=dx/Math.max(d,40);vy=dy/Math.max(d,40)}}
+ const m=Math.hypot(vx,vy);
+ if(m>0){vx/=Math.max(m,1);vy/=Math.max(m,1);let ta=Math.atan2(vy,vx),da=Math.atan2(Math.sin(ta-face),Math.cos(ta-face));face+=da*Math.min(1,dt*14);move(pl,vx*110*dt,vy*110*dt,7)}
+ KEYPOS.forEach((k,i)=>{if(!got[i]&&Math.hypot(pl.x-(k[0]+.5)*TS,pl.y-(k[1]+.5)*TS)<16){got[i]=true;keys++;beep(880,.25,.08);say('Clé trouvée ('+keys+'/3)')}});
+ const ex=19.5*TS,ey=7.5*TS;
+ if(Math.hypot(pl.x-ex,pl.y-ey)<26){if(keys>=3){state='win';beep(660,.5,.08);return}else say('La porte est verrouillée : il faut 3 clés.')}
+ // fantôme
+ const gc=[Math.floor(gh.x/TS),Math.floor(gh.y/TS)],pc=[Math.floor(pl.x/TS),Math.floor(pl.y/TS)];
+ const dist=Math.hypot(pl.x-gh.x,pl.y-gh.y),sees=dist<170&&los(gh.x,gh.y,pl.x,pl.y);
+ gh.rep-=dt;
+ if(sees){if(gh.mode!='chase')beep(150,.4,.1);gh.mode='chase';gh.timer=4;if(gh.rep<=0){gh.path=bfs(gc,pc);gh.rep=.25}}
+ else if(gh.mode=='chase'){gh.timer-=dt;if(gh.timer<=0||!gh.path.length){gh.mode='patrol';gh.path=[]}}
+ if(gh.mode=='patrol'&&!gh.path.length){const w=WP[Math.floor(Math.random()*WP.length)];gh.path=bfs(gc,w)}
+ if(gh.path.length){const t=gh.path[0],tx=(t[0]+.5)*TS,ty=(t[1]+.5)*TS,d=Math.hypot(tx-gh.x,ty-gh.y),sp=(gh.mode=='chase'?98:58)*dt;
+  if(d<=sp){gh.x=tx;gh.y=ty;gh.path.shift()}else{gh.x+=(tx-gh.x)/d*sp;gh.y+=(ty-gh.y)/d*sp}}
+ beepT-=dt;if(beepT<=0&&dist<200){beep(gh.mode=='chase'?90:60,.15,.07);beepT=Math.max(.25,dist/220)}
+ if(dist<15){state='lose';beep(70,.8,.12)}
+}
+function ghost(){const b=Math.sin(time*3)*3,x=gh.x,y=gh.y+b,chase=gh.mode=='chase';
+ g.fillStyle=chase?'rgba(255,150,150,.9)':'rgba(170,210,255,.85)';g.beginPath();g.moveTo(x-12,y+12);g.lineTo(x-12,y-4);g.lineTo(x,y-16);g.lineTo(x+12,y-4);g.lineTo(x+12,y+12);
+ for(let i=0;i<4;i++)g.lineTo(x+12-i*6-3,y+(i%2?12:6));g.closePath();g.fill();
+ g.fillStyle='#10131a';[[-5,-3],[5,-3]].forEach(e=>{g.beginPath();g.moveTo(x+e[0],y+e[1]-4);g.lineTo(x+e[0]+3,y+e[1]);g.lineTo(x+e[0],y+e[1]+4);g.lineTo(x+e[0]-3,y+e[1]);g.fill()})}
+function draw(){
+ g.fillStyle='#000';g.fillRect(0,0,W,H);
+ for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=MAP[y][x];
+  g.fillStyle=t=='#'?'#3a3347':t=='X'?(keys>=3?'#2f7d4a':'#6b4226'):((x+y)&1?'#1c1c27':'#1a1a24');g.fillRect(x*TS,y*TS,TS,TS);
+  if(t=='#'){g.fillStyle='#2b2536';g.fillRect(x*TS,y*TS+TS-6,TS,6)}}
+ KEYPOS.forEach((k,i)=>{if(got[i])return;const x=(k[0]+.5)*TS,y=(k[1]+.5)*TS;g.fillStyle='#ffd166';g.beginPath();g.arc(x-4,y,5,0,7);g.fill();g.fillStyle='#0e0e14';g.beginPath();g.arc(x-4,y,2,0,7);g.fill();g.fillStyle='#ffd166';g.fillRect(x,y-1.5,10,3);g.fillRect(x+6,y,2,5)});
+ if(state!='title')ghost();
+ g.fillStyle='#e6edf3';g.beginPath();g.arc(pl.x,pl.y,7,0,7);g.fill();g.fillStyle='#8fb8ff';g.beginPath();g.arc(pl.x+Math.cos(face)*4,pl.y+Math.sin(face)*4,3,0,7);g.fill();
+ // obscurité
+ lg.globalCompositeOperation='source-over';lg.fillStyle='rgba(0,0,6,.975)';lg.fillRect(0,0,W,H);lg.globalCompositeOperation='destination-out';
+ let gr=lg.createRadialGradient(pl.x,pl.y,4,pl.x,pl.y,70);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(1,'rgba(0,0,0,0)');lg.fillStyle=gr;lg.beginPath();lg.arc(pl.x,pl.y,70,0,7);lg.fill();
+ const HALF=.5,RG=240;lg.beginPath();lg.moveTo(pl.x,pl.y);
+ for(let i=0;i<=48;i++){const a=face-HALF+HALF*2*i/48;let l=0;while(l<RG&&!wallc(Math.floor((pl.x+Math.cos(a)*(l+4))/TS),Math.floor((pl.y+Math.sin(a)*(l+4))/TS)))l+=4;lg.lineTo(pl.x+Math.cos(a)*l,pl.y+Math.sin(a)*l)}
+ lg.closePath();gr=lg.createRadialGradient(pl.x,pl.y,10,pl.x,pl.y,RG);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(1,'rgba(0,0,0,.05)');lg.fillStyle=gr;lg.fill();
+ g.drawImage(lc,0,0);
+ const dist=Math.hypot(pl.x-gh.x,pl.y-gh.y);if(state=='play'&&dist<160){const v=g.createRadialGradient(W/2,H/2,H/3,W/2,H/2,W*.65);v.addColorStop(0,'rgba(120,0,0,0)');v.addColorStop(1,'rgba(160,0,0,'+(.5*(1-dist/160))+')');g.fillStyle=v;g.fillRect(0,0,W,H)}
+ g.fillStyle='#ffd166';g.font='bold 15px system-ui';g.textAlign='left';g.fillText('Clés : '+keys+'/3   Temps : '+time.toFixed(0)+'s',10,20);
+ if(msgT>0){g.textAlign='center';g.fillStyle='#fff';g.fillText(msg,W/2,H-14)}
+ if(joy){g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=2;g.beginPath();g.arc(joy.ox,joy.oy,40,0,7);g.stroke();const d=Math.hypot(joy.x-joy.ox,joy.y-joy.oy),k=Math.min(1,40/(d||1));g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.arc(joy.ox+(joy.x-joy.ox)*k,joy.oy+(joy.y-joy.oy)*k,16,0,7);g.fill()}
+ const box=(a,b)=>{g.fillStyle='rgba(0,0,0,.82)';g.fillRect(0,150,W,170);g.textAlign='center';g.fillStyle='#fff';g.font='bold 34px system-ui';g.fillText(a,W/2,215);g.font='16px system-ui';g.fillStyle='#aab';g.fillText(b,W/2,255);g.fillText('Entrée ou toucher pour '+(state=='title'?'commencer':'rejouer'),W/2,290)};
+ if(state=='title')box('Évasion Maison Hantée','Trouve 3 clés, puis fuis par la porte à droite.');
+ if(state=='win')box('Évadé !','Tu es sorti en '+time.toFixed(1)+' secondes.');
+ if(state=='lose')box('Le fantôme t\'a eu...','Tu as récupéré '+keys+'/3 clés.');
+}
+function pt(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
+cv.addEventListener('pointerdown',e=>{if(state!='play'){reset();return}const p=pt(e);joy={ox:p.x,oy:p.y,x:p.x,y:p.y,id:e.pointerId};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(joy&&joy.id==e.pointerId){const p=pt(e);joy.x=p.x;joy.y=p.y}});
+['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,()=>joy=null));
+addEventListener('keydown',e=>{if(/Arrow|Space/.test(e.code))e.preventDefault();K[e.code]=1;if(e.code=='Enter'&&state!='play')reset()});
+addEventListener('keyup',e=>K[e.code]=0);
+document.getElementById('re').onclick=reset;
+document.getElementById('snd').onclick=e=>{snd=!snd;e.target.textContent='Son : '+(snd?'oui':'non')};
+reset();state='title';
+let last=performance.now();(function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;update(dt);draw();requestAnimationFrame(loop)})(last);
+</script></body></html>

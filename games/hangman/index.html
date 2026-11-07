@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pendu</title>
+<style>
+html,body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;text-align:center}
+h1{font-size:22px;margin:10px 0 0}
+svg{width:min(240px,60vw);height:auto;background:#161b22;border-radius:10px;margin:8px}
+svg .p{stroke:#e6edf3;stroke-width:4;fill:none;stroke-linecap:round;display:none}
+svg .p.on{display:inline}
+svg .g{stroke:#8b949e;stroke-width:5;fill:none;stroke-linecap:round}
+#w{font-size:32px;letter-spacing:8px;margin:8px;min-height:40px;font-family:monospace}
+#kb{max-width:96vw;margin:8px auto;display:flex;flex-direction:column;gap:6px;align-items:center}
+#kb div{display:flex;gap:5px;justify-content:center}
+#kb button{width:clamp(26px,8.2vw,42px);height:44px;border:0;border-radius:6px;background:#30363d;color:#e6edf3;font-size:16px;font-weight:bold}
+#kb button:disabled{opacity:.35}#kb button.ok{background:#238636}#kb button.no{background:#8e2b2b}
+#st{min-height:26px;font-size:18px}
+#re{background:#1f6feb;color:#fff;border:0;border-radius:8px;padding:10px 20px;font-size:16px}
+small{color:#8b949e;display:block;margin:8px}
+</style></head><body>
+<h1>Pendu</h1>
+<svg viewBox="0 0 200 220">
+<path class="g" d="M20 205H110M45 205V20H130"/>
+<path class="p" id="e1" d="M130 20V45"/>
+<circle class="p" id="e2" cx="130" cy="58" r="13"/>
+<path class="p" id="e3" d="M130 71V125"/>
+<path class="p" id="e4" d="M130 85L108 108"/>
+<path class="p" id="e5" d="M130 85L152 108"/>
+<path class="p" id="e6" d="M130 125L110 165"/>
+<path class="p" id="e7" d="M130 125L150 165"/>
+</svg>
+<div id="w"></div><div id="st"></div>
+<div id="kb"></div>
+<button id="re">Rejouer</button>
+<small id="sc"></small>
+<script>
+const WORDS="maison,jardin,fenêtre,voiture,ordinateur,bibliothèque,chocolat,montagne,éléphant,girafe,soleil,nuage,orage,tempête,rivière,océan,plage,forêt,château,dragon,sorcière,fantôme,pirate,trésor,bateau,avion,fusée,planète,étoile,galaxie,musique,guitare,piano,violon,tambour,peinture,crayon,cahier,école,professeur,élève,devoir,examen,cuisine,fromage,baguette,croissant,pomme,banane,fraise,cerise,orange,citron,légume,carotte,tomate,poisson,fourmi,papillon,escargot,hibou,renard,loup,lapin,cheval,vacances,voyage,aventure,mystère,énigme,lumière,silence,bonheur,amitié,courage,liberté,horloge,miroir,parapluie,chapeau,manteau,lunettes,téléphone,clavier,souris,écran".split(",");
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase();
+const ROWS=["AZERTYUIOP","QSDFGHJKLM","WXCVBN"];
+let word,used,err,over,streak=0,best=0;
+try{best=+localStorage.getItem('pz_hangman')||0}catch(e){}
+const $=id=>document.getElementById(id);
+const kb=$('kb');
+ROWS.forEach(r=>{const d=document.createElement('div');[...r].forEach(l=>{const b=document.createElement('button');b.textContent=l;b.id='k'+l;b.onclick=()=>play(l);d.appendChild(b)});kb.appendChild(d)});
+function newGame(){word=WORDS[Math.floor(Math.random()*WORDS.length)];used=new Set();err=0;over=false;document.getElementById('st').textContent='';
+ document.querySelectorAll('.p').forEach(p=>p.classList.remove('on'));
+ document.querySelectorAll('#kb button').forEach(b=>{b.disabled=false;b.className=''});show()}
+function show(){const n=norm(word);$('w').textContent=[...word].map((c,i)=>used.has(n[i])||!/[A-Za-z]/.test(n[i])?c.toUpperCase():'_').join(' ');
+ $('sc').textContent='Erreurs : '+err+'/7 — Série : '+streak+' — Meilleure série : '+best}
+function end(win){over=true;$('st').textContent=win?'Bravo, tu as gagné !':'Perdu ! Le mot était : '+word.toUpperCase();
+ if(win){streak++;if(streak>best){best=streak;try{localStorage.setItem('pz_hangman',best)}catch(e){}}}else streak=0;
+ if(!win)$('w').textContent=[...word.toUpperCase()].join(' ');
+ document.querySelectorAll('#kb button').forEach(b=>b.disabled=true);
+ $('sc').textContent='Erreurs : '+err+'/7 — Série : '+streak+' — Meilleure série : '+best}
+function play(l){if(over||used.has(l))return;used.add(l);const b=$('k'+l);b.disabled=true;const n=norm(word);
+ if(n.includes(l)){b.className='ok';show();if([...n].every(c=>used.has(c)))end(true)}
+ else{b.className='no';err++;$('e'+err).classList.add('on');show();if(err>=7)end(false)}
+ if(!over)$('st').textContent=''}
+addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(e.key=='Enter'&&over){newGame();return}
+ const l=norm(e.key);if(e.key.length==1&&/^[A-Z]$/.test(l))play(l)});
+$('re').onclick=()=>{newGame();$('st').textContent=''};
+newGame();
+</script></body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Low Poly Racer</title>
+<style>
+html,body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none}
+h1{font-size:20px;margin:8px 0 2px}
+canvas{max-width:96vw;height:auto;background:#000;border:2px solid #30363d;border-radius:8px;display:block;margin:6px auto}
+#pad{display:flex;justify-content:space-between;max-width:96vw;width:640px;margin:4px auto}
+#pad div{display:flex;gap:8px}
+#pad button{width:72px;height:56px;font-size:20px;border:0;border-radius:10px;background:#21262d;color:#e6edf3;touch-action:none}
+#pad button.on{background:#e63946}
+p{font-size:13px;color:#8b949e;margin:4px}
+</style></head><body>
+<h1>Low Poly Racer</h1>
+<canvas id="c" width="640" height="400"></canvas>
+<div id="pad"><div><button data-k="L">&#9664;</button><button data-k="R">&#9654;</button></div><div><button data-k="D">FREIN</button><button data-k="U">GAZ</button></div></div>
+<p>Flèches / WASD (ZQSD) : conduire. Entrée ou toucher l'écran : démarrer / rejouer. 3 tours, meilleur temps sauvegardé.</p>
+<script>
+const cv=document.getElementById('c'),g=cv.getContext('2d'),W=640,H=400;
+const SEG=200,RW=2000,CAM=0.84,CH=1000,DRAW=140,LAPS=3,MAXS=12000,PZ=CH*CAM;
+const segs=[];
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const plan=[[40,0,0],[60,2,0],[40,0,2500],[40,-3,-2500],[50,0,0],[60,4,1500],[40,-2,-1500],[50,0,0],[50,-4,0],[40,0,3000],[40,3,-3000],[30,0,0]];
+let yy=0;const ease=t=>(1-Math.cos(Math.PI*t))/2;
+plan.forEach(([n,c,dy])=>{n*=2;for(let i=0;i<n;i++)segs.push({i:segs.length,y1:yy+dy*ease(i/n),y2:yy+dy*ease((i+1)/n),curve:c*Math.min(1,Math.sin(Math.PI*(i+.5)/n)*1.6),obs:[]});yy+=dy});
+const N=segs.length,TL=N*SEG;
+for(let i=30;i<N;i+=22+Math.floor(rnd()*20))segs[i].obs.push({x:rnd()*1.6-.8,hit:false});
+let best=0;try{best=parseFloat(localStorage.getItem('pz_lowpoly'))||0}catch(e){}
+const K={};let pos=0,px=0,speed=0,state='ready',cd=0,tm=0,lap=1,lapT=0,laps=[],steer=0,bgx=0,newRec=false;
+const fmt=t=>{const m=Math.floor(t/60),s=t-m*60;return m+':'+(s<10?'0':'')+s.toFixed(2)};
+function start(){pos=0;px=0;speed=0;cd=3.99;tm=0;lap=1;lapT=0;laps=[];steer=0;bgx=0;newRec=false;segs.forEach(s=>s.obs.forEach(o=>o.hit=false));state='count'}
+const left=()=>K.ArrowLeft||K.KeyA||K.KeyQ||K.L,right=()=>K.ArrowRight||K.KeyD||K.R,up=()=>K.ArrowUp||K.KeyW||K.KeyZ||K.U,down=()=>K.ArrowDown||K.KeyS||K.D;
+addEventListener('keydown',e=>{if(/Arrow|Space/.test(e.code))e.preventDefault();K[e.code]=1;if((e.code=='Enter'||e.code=='Space')&&(state=='ready'||state=='end'))start()});
+addEventListener('keyup',e=>K[e.code]=0);
+cv.addEventListener('pointerdown',()=>{if(state=='ready'||state=='end')start()});
+document.querySelectorAll('#pad button').forEach(b=>{const k=b.dataset.k;
+ const on=e=>{e.preventDefault();K[k]=1;b.classList.add('on');if(state=='ready'||state=='end')start()},off=e=>{K[k]=0;b.classList.remove('on')};
+ b.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,off))});
+function update(dt){
+ const ps=segs[Math.floor((pos+PZ)/SEG)%N];
+ if(state=='count'){cd-=dt;if(cd<=0)state='run';return}
+ if(state!='run')return;
+ tm+=dt;lapT+=dt;
+ const sp=speed/MAXS,dx=dt*2*sp,A=MAXS/5;
+ pos+=speed*dt;
+ const s=(right()?1:0)-(left()?1:0);steer+=(s-steer)*Math.min(1,dt*10);
+ px+=dx*s;px-=dx*sp*ps.curve*0.2;
+ bgx+=ps.curve*sp*dt*40;
+ if(up())speed+=A*dt;else if(down())speed-=A*2.5*dt;else speed-=A*0.5*dt;
+ if(Math.abs(px)>1&&speed>MAXS/4)speed-=MAXS*0.6*dt;
+ px=Math.max(-2.6,Math.min(2.6,px));
+ speed=Math.max(0,Math.min(MAXS,speed));
+ for(const o of ps.obs)if(!o.hit&&Math.abs(px-o.x)<0.28){o.hit=true;speed*=0.25}
+ if(pos>=TL){pos-=TL;laps.push(lapT);lapT=0;segs.forEach(s=>s.obs.forEach(o=>o.hit=false));
+  if(lap>=LAPS){state='end';if(!best||tm<best){best=tm;newRec=true;try{localStorage.setItem('pz_lowpoly',best)}catch(e){}}}else lap++}
+}
+function poly(pts,c){g.fillStyle=c;g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fill()}
+function render(){
+ const base=segs[Math.floor(pos/SEG)%N],bp=(pos%SEG)/SEG,camY=CH+base.y1+(base.y2-base.y1)*bp;
+ let x=0,dx=-base.curve*bp,maxy=H;
+ const sky=g.createLinearGradient(0,0,0,H/2);sky.addColorStop(0,'#1b2a49');sky.addColorStop(1,'#f4a261');
+ g.fillStyle=sky;g.fillRect(0,0,W,H/2);g.fillStyle='#276049';g.fillRect(0,H/2,W,H/2);
+ for(let L=0;L<2;L++){const wd=260+L*140,f=L?.2:.45;
+  for(let k=-1;k<7;k++){const x0=(((k*wd-bgx*f)%(7*wd))+7*wd)%(7*wd)-wd;
+   poly([[x0,H/2],[x0+wd/2,H/2-60+L*-30-(k&1)*25],[x0+wd,H/2]],L?'#3d405b':'#5c4d7d')}}
+ const vis=[];
+ for(let n=0;n<DRAW;n++){
+  const s=segs[(base.i+n)%N],zz=s.i*SEG+(base.i+n>=N?TL:0);
+  const a={wx:0,wy:s.y1,z:zz},b={wx:0,wy:s.y2,z:zz+SEG};
+  for(const [p,cx] of [[a,px*RW-x],[b,px*RW-x-dx]]){p.cz=p.z-pos;const sc=CAM/p.cz;p.s=sc;p.x=W/2+sc*(p.wx-cx)*W/2;p.y=H/2-sc*(p.wy-camY)*H/2;p.w=sc*RW*W/2}
+  x+=dx;dx+=s.curve;
+  if(a.cz<=CAM||b.y>=a.y||b.y>=maxy)continue;
+  const alt=Math.floor(s.i/4)%2;
+  g.fillStyle=alt?'#2d6a4f':'#276049';g.fillRect(0,b.y,W,a.y-b.y);
+  const rw=a.w*.14,rw2=b.w*.14;
+  poly([[a.x-a.w-rw,a.y],[a.x-a.w,a.y],[b.x-b.w,b.y],[b.x-b.w-rw2,b.y]],alt?'#e63946':'#f1faee');
+  poly([[a.x+a.w+rw,a.y],[a.x+a.w,a.y],[b.x+b.w,b.y],[b.x+b.w+rw2,b.y]],alt?'#e63946':'#f1faee');
+  poly([[a.x-a.w,a.y],[a.x+a.w,a.y],[b.x+b.w,b.y],[b.x-b.w,b.y]],alt?'#4a4e69':'#454963');
+  if(alt)poly([[a.x-a.w*.02,a.y],[a.x+a.w*.02,a.y],[b.x+b.w*.02,b.y],[b.x-b.w*.02,b.y]],'#f1faee');
+  if(s.i==0||s.i==1)poly([[a.x-a.w,a.y],[a.x+a.w,a.y],[b.x+b.w,b.y],[b.x-b.w,b.y]],'#f1faee');
+  vis.push([s,a,maxy]);maxy=a.y;
+ }
+ for(let k=vis.length-1;k>=0;k--){const [s,a]=vis[k],clip=k?vis[k-1][2]:H;
+  for(const o of s.obs){const ox=a.x+a.w*o.x,w=a.w*.2,h=a.w*.38;
+   g.save();g.beginPath();g.rect(0,0,W,vis[k][2]);g.clip();
+   poly([[ox-w,a.y],[ox+w,a.y],[ox,a.y-h]],o.hit?'#bb6a30':'#f77f00');
+   poly([[ox-w*.55,a.y-h*.45],[ox+w*.55,a.y-h*.45],[ox+w*.3,a.y-h*.7],[ox-w*.3,a.y-h*.7]],'#f1faee');g.restore()}}
+ car();hud();
+}
+function car(){const cx=W/2+steer*8,by=H-14+(state=='run'?Math.sin(tm*40)*speed/MAXS*1.5:0);
+ g.save();g.translate(cx,by);g.rotate(steer*.04);
+ g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,2,58,7,0,0,7);g.fill();
+ poly([[-58,-20],[-42,-20],[-42,0],[-58,0]],'#111');poly([[42,-20],[58,-20],[58,0],[42,0]],'#111');
+ poly([[-50,-4],[50,-4],[44,-26],[30,-42],[-30,-42],[-44,-26]],'#e63946');
+ poly([[-50,-4],[50,-4],[47,-14],[-47,-14]],'#b02a37');
+ poly([[-25,-38],[25,-38],[30,-26],[-30,-26]],'#1d3557');poly([[-25,-38],[0,-38],[-5,-26],[-30,-26]],'#2b4c7e');
+ poly([[-46,-20],[-32,-20],[-32,-12],[-46,-12]],'#ffd166');poly([[32,-20],[46,-20],[46,-12],[32,-12]],'#ffd166');
+ if(down()){poly([[-46,-20],[-32,-20],[-32,-12],[-46,-12]],'#ff2222');poly([[32,-20],[46,-20],[46,-12],[32,-12]],'#ff2222')}
+ g.restore()}
+function hud(){g.fillStyle='rgba(13,17,23,.65)';g.fillRect(0,0,W,30);g.fillStyle='#e6edf3';g.font='bold 16px system-ui';g.textAlign='left';
+ g.fillText('Tour '+Math.min(lap||1,LAPS)+'/'+LAPS+'   '+fmt(tm||0),10,21);g.textAlign='right';g.fillText('Record '+(best?fmt(best):'--')+'   '+Math.round(speed/MAXS*220||0)+' km/h',W-10,21);
+ g.textAlign='center';g.font='bold 28px system-ui';
+ const big=t=>{g.fillStyle='rgba(13,17,23,.7)';g.fillRect(0,120,W,150);g.fillStyle='#fff';t.forEach((l,i)=>{g.font=(i?'16px':'bold 30px')+' system-ui';g.fillText(l,W/2,165+i*32)})};
+ if(state=='ready')big(['Low Poly Racer','Contre-la-montre : '+LAPS+' tours','Entrée / toucher pour démarrer']);
+ if(state=='count'){g.fillStyle='#ffd166';g.font='bold 80px system-ui';g.fillText(Math.ceil(cd),W/2,170)}
+ if(state=='end')big([newRec?'Nouveau record !':'Arrivée !','Temps : '+fmt(tm)+' (tours : '+laps.map(fmt).join(' | ')+')','Entrée / toucher pour rejouer']);
+ if(state=='run'&&tm<1.2){g.fillStyle='#8aff8a';g.font='bold 50px system-ui';g.fillText('GO !',W/2,170)}}
+let last=performance.now();
+(function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;update(dt);render();requestAnimationFrame(loop)})(last);
+</script></body></html>

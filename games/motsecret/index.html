@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mot Secret</title>
+<style>
+html,body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;text-align:center}
+h1{font-size:22px;margin:10px 0 4px}
+#grid{display:grid;grid-template-columns:repeat(5,clamp(40px,12vw,58px));gap:6px;justify-content:center;margin:10px auto}
+#grid div{aspect-ratio:1;border:2px solid #30363d;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:bold;border-radius:6px}
+#grid .f{border-color:#8b949e}
+#grid .g{background:#2ea043;border-color:#2ea043}#grid .y{background:#c9a227;border-color:#c9a227}#grid .x{background:#3b4048;border-color:#3b4048}
+#kb{display:flex;flex-direction:column;gap:6px;align-items:center;max-width:98vw;margin:10px auto}
+#kb div{display:flex;gap:4px;justify-content:center}
+#kb button{min-width:clamp(26px,8vw,40px);height:46px;border:0;border-radius:6px;background:#30363d;color:#e6edf3;font-size:15px;font-weight:bold;padding:0 4px}
+#kb .g{background:#2ea043}#kb .y{background:#c9a227}#kb .x{background:#161b22;color:#6e7681}
+#msg{min-height:26px;font-size:17px}
+#re{background:#1f6feb;color:#fff;border:0;border-radius:8px;padding:10px 20px;font-size:16px}
+small{display:block;color:#8b949e;margin:8px}
+</style></head><body>
+<h1>Mot Secret</h1>
+<div id="msg"></div>
+<div id="grid"></div>
+<div id="kb"></div>
+<button id="re">Rejouer</button>
+<small id="sc"></small>
+<script>
+const WORDS="AIMER ALBUM AMOUR ANGLE ARBRE ASILE AVION BALLE BARBE BASSE BATON BEIGE BIJOU BOIRE BOITE BRUIT BULLE CABLE CADRE CARTE CHAMP CHANT CHIEN CHOSE CIBLE CLAIR COEUR COUDE COURS CRAIE CREME DANSE DENTS DROIT ECRAN ECOLE ENFER ETAGE FERME FILLE FLEUR FORET FRERE FRUIT FUMEE GARDE GLACE GRAIN HEURE HIBOU HOTEL IMAGE JAUNE JEUNE JOUER JOURS LAINE LAPIN LIVRE MAGIE MARIN METAL MONDE MUSEE NEIGE NOIRE NUAGE OCEAN OMBRE ORAGE PAGES PAIRE PATTE PIANO PLAGE PLUIE POIRE POMME PORTE POULE PRIME QUEUE RADIO REINE RIVAL ROBOT ROUGE ROUTE SABLE SALLE SAUCE SERRE SIGNE SOURD TABLE TASSE TERRE TIGRE TRAIN TRAIT VACHE VALSE VENTS VERRE VIDEO VILLE VOILE ZEBRE ZONES".split(" ");
+const ROWS=["AZERTYUIOP","QSDFGHJKLM","@WXCVBN#"];
+let secret,rows,cur,over,kc,wins=0,best=0;
+try{best=+localStorage.getItem('pz_motsecret')||0}catch(e){}
+const $=id=>document.getElementById(id),grid=$('grid'),kb=$('kb');
+for(let i=0;i<30;i++)grid.appendChild(document.createElement('div'));
+ROWS.forEach(r=>{const d=document.createElement('div');[...r].forEach(l=>{const b=document.createElement('button');
+ b.textContent=l=='@'?'ENTRÉE':l=='#'?'⌫':l;b.dataset.k=l=='@'?'Enter':l=='#'?'Back':l;b.onclick=()=>key(b.dataset.k);d.appendChild(b)});kb.appendChild(d)});
+function newGame(){secret=WORDS[Math.floor(Math.random()*WORDS.length)];rows=[];cur='';over=false;kc={};$('msg').textContent='';
+ grid.childNodes.forEach(c=>{c.textContent='';c.className=''});kb.querySelectorAll('button').forEach(b=>b.className='');draw();
+ $('sc').textContent='Victoires : '+wins+' — Record : '+(best?best+' essai'+(best>1?'s':''):'--')}
+function draw(){for(let r=0;r<6;r++)for(let c=0;c<5;c++){const d=grid.childNodes[r*5+c];if(r<rows.length)continue;
+ if(r==rows.length){d.textContent=cur[c]||'';d.className=cur[c]?'f':''}else{d.textContent='';d.className=''}}}
+function score(w){const res=Array(5).fill('x'),left={};
+ for(let i=0;i<5;i++){if(w[i]==secret[i])res[i]='g';else left[secret[i]]=(left[secret[i]]||0)+1}
+ for(let i=0;i<5;i++)if(res[i]=='x'&&left[w[i]]>0){res[i]='y';left[w[i]]--}
+ return res}
+function submit(){if(cur.length<5){$('msg').textContent='5 lettres requises.';return}
+ const r=score(cur),row=rows.length;
+ for(let i=0;i<5;i++){const d=grid.childNodes[row*5+i];d.textContent=cur[i];d.className=r[i];
+  const p=kc[cur[i]]||'',v=r[i];if(v=='g'||(v=='y'&&p!='g')||(v=='x'&&!p))kc[cur[i]]=v}
+ kb.querySelectorAll('button').forEach(b=>{if(kc[b.dataset.k])b.className=kc[b.dataset.k]});
+ rows.push(cur);const win=cur==secret;cur='';
+ if(win){over=true;wins++;if(!best||rows.length<best){best=rows.length;try{localStorage.setItem('pz_motsecret',best)}catch(e){}}
+  $('msg').textContent='Bravo ! Trouvé en '+rows.length+' essai'+(rows.length>1?'s':'')+'.'}
+ else if(rows.length>=6){over=true;$('msg').textContent='Perdu ! Le mot était '+secret+'.'}
+ else $('msg').textContent='';
+ $('sc').textContent='Victoires : '+wins+' — Record : '+(best?best+' essai'+(best>1?'s':''):'--');draw()}
+function key(k){if(over){if(k=='Enter')newGame();return}
+ if(k=='Enter')submit();else if(k=='Back'){cur=cur.slice(0,-1);draw()}
+ else if(/^[A-Z]$/.test(k)&&cur.length<5){cur+=k;$('msg').textContent='';draw()}}
+addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(e.key=='Enter'){e.preventDefault();key('Enter')}else if(e.key=='Backspace')key('Back');
+ else if(e.key.length==1){const l=e.key.normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase();if(/^[A-Z]$/.test(l))key(l)}});
+$('re').onclick=e=>{e.target.blur();newGame()};
+newGame();
+</script></body></html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Brick Breaker</title>
+<style>
+html,body{margin:0;height:100%;background:#1a0808;color:#fecaca;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+#hud{margin-bottom:8px;font-size:17px;display:flex;gap:20px}
+canvas{background:#2a0c0c;border:3px solid #ef4444;border-radius:10px;max-width:96vw;max-height:78vh}
+small{margin-top:8px;opacity:.7}
+</style></head><body>
+<div id="hud"><span>Score : <b id="s">0</b></span><span>Vies : <b id="v">3</b></span></div>
+<canvas id="c" width="480" height="360"></canvas>
+<small>Souris / flèches / glisse pour bouger · clique pour (re)lancer</small>
+<script>
+var c=document.getElementById('c'),x=c.getContext('2d'),W=480,H=360;
+var R=5,C=8,BW=52,BH=18,GAP=6,OX=(W-(C*BW+(C-1)*GAP))/2;
+var pad,ball,bricks,score,lives,run,keys={};
+var colors=['#ef4444','#f97316','#eab308','#22c55e','#06b6d4'];
+function init(){
+  pad={x:W/2-40,w:80,h:10};score=0;lives=3;bricks=[];
+  for(var r=0;r<R;r++)for(var k=0;k<C;k++)bricks.push({x:OX+k*(BW+GAP),y:40+r*(BH+GAP),on:true,c:colors[r]});
+  reset();hud();
+}
+function reset(){ball={x:W/2,y:H-40,vx:3*(Math.random()<.5?-1:1),vy:-3.6,r:7};run=false}
+function hud(){document.getElementById('s').textContent=score;document.getElementById('v').textContent=lives}
+function loop(){
+  if(keys.ArrowLeft||keys.a)pad.x-=6;if(keys.ArrowRight||keys.d)pad.x+=6;
+  pad.x=Math.max(0,Math.min(W-pad.w,pad.x));
+  if(run){
+    ball.x+=ball.vx;ball.y+=ball.vy;
+    if(ball.x<ball.r||ball.x>W-ball.r)ball.vx*=-1;
+    if(ball.y<ball.r)ball.vy*=-1;
+    if(ball.y+ball.r>H-20&&ball.y<H-8&&ball.x>pad.x&&ball.x<pad.x+pad.w&&ball.vy>0){
+      ball.vy=-Math.abs(ball.vy);ball.vx=((ball.x-(pad.x+pad.w/2))/(pad.w/2))*4.5;
+    }
+    bricks.forEach(function(b){
+      if(b.on&&ball.x>b.x&&ball.x<b.x+BW&&ball.y>b.y-ball.r&&ball.y<b.y+BH+ball.r){b.on=false;ball.vy*=-1;score+=10;hud()}
+    });
+    if(ball.y>H){lives--;hud();if(lives<=0){init()}else reset()}
+    if(!bricks.some(function(b){return b.on})){var s=score;init();score=s;hud()}
+  }
+  draw();requestAnimationFrame(loop);
+}
+function draw(){
+  x.clearRect(0,0,W,H);
+  bricks.forEach(function(b){if(b.on){x.fillStyle=b.c;x.fillRect(b.x,b.y,BW,BH)}});
+  x.fillStyle='#f87171';x.fillRect(pad.x,H-20,pad.w,pad.h);
+  x.fillStyle='#fff';x.beginPath();x.arc(ball.x,ball.y,ball.r,0,7);x.fill();
+  if(!run){x.fillStyle='rgba(255,255,255,.85)';x.font='bold 20px system-ui';x.textAlign='center';x.fillText('Clique ou appuie sur Espace pour lancer',W/2,H/2+60)}
+}
+function moveTo(cx){var r=c.getBoundingClientRect();pad.x=(cx-r.left)*(W/r.width)-pad.w/2}
+c.addEventListener('mousemove',function(e){moveTo(e.clientX)});
+c.addEventListener('touchmove',function(e){e.preventDefault();moveTo(e.touches[0].clientX)},{passive:false});
+c.addEventListener('touchstart',function(e){moveTo(e.touches[0].clientX);run=true},{passive:true});
+c.addEventListener('click',function(){run=true});
+document.addEventListener('keydown',function(e){keys[e.key]=true;if(e.key==' '){run=true;e.preventDefault()}if(e.key.indexOf('Arrow')==0)e.preventDefault()});
+document.addEventListener('keyup',function(e){keys[e.key]=false});
+init();loop();
+</script></body></html>

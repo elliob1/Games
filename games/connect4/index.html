@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Puissance 4</title>
+<style>
+:root{--bg:#0e1120;--pn:#1d2a6b;--ac:#38bdf8;--tx:#e6e9f5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#1a2048,var(--bg));color:var(--tx);font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px;user-select:none;-webkit-user-select:none}
+h1{margin:6px 0;font-size:1.5rem;letter-spacing:.08em;color:var(--ac)}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;width:min(94vw,460px);margin:6px 0}
+.stat{background:#1b2040;padding:6px 12px;border-radius:8px;text-align:center}
+button{background:var(--ac);color:#04202e;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:1rem}
+#b{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:min(94vw,460px);background:var(--pn);padding:8px;border-radius:14px;touch-action:manipulation}
+.col{display:flex;flex-direction:column;gap:6px;cursor:pointer;border-radius:10px}
+.col:hover{background:#ffffff14}
+.s{aspect-ratio:1;border-radius:50%;background:#0b1030;box-shadow:inset 0 3px 6px #000a}
+.s.p1{background:radial-gradient(circle at 35% 30%,#fda4af,#e11d48)}
+.s.p2{background:radial-gradient(circle at 35% 30%,#fde68a,#d97706)}
+.s.win{outline:4px solid #fff;animation:pl .6s infinite alternate}
+@keyframes pl{to{transform:scale(.88)}}
+#msg{height:1.6em;margin:10px;font-weight:700;color:var(--ac)}
+small{opacity:.6;text-align:center;max-width:460px}
+</style></head><body>
+<h1>PUISSANCE 4</h1>
+<div class="bar"><div class="stat" id="sc">Vous 0 - 0 IA</div><button id="rj">Rejouer</button></div>
+<div id="b"></div>
+<div id="msg"></div>
+<small>Vous jouez les rouges. Cliquez une colonne (ou touches 1 à 7).</small>
+<script>
+const R=6,C=7,$=s=>document.querySelector(s),K='pz_connect4_wins',ORD=[3,2,4,1,5,0,6];
+let b,over,busy,cols=[],cells=[],sc=[0,0];
+try{sc[0]=+localStorage.getItem(K)||0}catch(e){}
+const W=[];
+for(let r=0;r<R;r++)for(let c=0;c<C;c++)for(const[dr,dc]of[[0,1],[1,0],[1,1],[1,-1]]){
+  const er=r+3*dr,ec=c+3*dc;
+  if(er>=0&&er<R&&ec>=0&&ec<C)W.push([0,1,2,3].map(k=>[r+k*dr,c+k*dc]));
+}
+function ev(){
+  let s=0;
+  for(const w of W){
+    let a=0,h=0;
+    for(const[r,c]of w){const v=b[r][c];if(v===2)a++;else if(v===1)h++}
+    if(a===4)return 1e5;if(h===4)return -1e5;
+    if(!h)s+=a===3?50:a===2?10:0;else if(!a)s-=h===3?60:h===2?10:0;
+  }
+  for(let r=0;r<R;r++)s+=b[r][3]===2?6:b[r][3]===1?-6:0;
+  return s;
+}
+function drop(c,p){for(let r=R-1;r>=0;r--)if(!b[r][c]){b[r][c]=p;return r}return -1}
+function mm(d,a,be,mx){
+  const v=ev();
+  if(Math.abs(v)>=1e5)return v>0?v+d:v-d;
+  if(!d)return v;
+  let any=0,best=mx?-1e9:1e9;
+  for(const c of ORD){
+    const r=drop(c,mx?2:1);if(r<0)continue;any=1;
+    const s=mm(d-1,a,be,!mx);b[r][c]=0;
+    if(mx){if(s>best)best=s;if(best>a)a=best}else{if(s<best)best=s;if(best<be)be=best}
+    if(a>=be)break;
+  }
+  return any?best:0;
+}
+function aiMove(){
+  let bs=-1e9,bc=[];
+  for(const c of ORD){
+    const r=drop(c,2);if(r<0)continue;
+    const s=mm(3,-1e9,1e9,false);b[r][c]=0;
+    if(s>bs){bs=s;bc=[c]}else if(s===bs)bc.push(c);
+  }
+  return bc[Math.random()*bc.length|0];
+}
+function line(p){
+  for(const w of W)if(w.every(([r,c])=>b[r][c]===p))return w;
+  return null;
+}
+function draw(win){
+  for(let r=0;r<R;r++)for(let c=0;c<C;c++)cells[r][c].className='s'+(b[r][c]?' p'+b[r][c]:'');
+  if(win)win.forEach(([r,c])=>cells[r][c].classList.add('win'));
+  $('#sc').textContent='Vous '+sc[0]+' - '+sc[1]+' IA';
+}
+function finish(p){
+  const w=p&&line(p);over=1;draw(w);
+  if(p===1){sc[0]++;try{localStorage.setItem(K,sc[0])}catch(e){}$('#msg').textContent='Bravo, vous gagnez !'}
+  else if(p===2){sc[1]++;$('#msg').textContent="L'IA gagne."}
+  else $('#msg').textContent='Match nul.';
+  draw(w);
+}
+function play(c){
+  if(over||busy)return;
+  const r=drop(c,1);if(r<0)return;
+  draw();
+  if(line(1))return finish(1);
+  if(b[0].every(v=>v))return finish(0);
+  busy=1;$('#msg').textContent="L'IA réfléchit...";
+  setTimeout(()=>{
+    const m=aiMove();drop(m,2);busy=0;$('#msg').textContent='';draw();
+    if(line(2))return finish(2);
+    if(b[0].every(v=>v))finish(0);
+  },250);
+}
+function init(){
+  b=Array.from({length:R},()=>Array(C).fill(0));over=0;busy=0;$('#msg').textContent='';draw();
+}
+for(let c=0;c<C;c++){
+  const d=document.createElement('div');d.className='col';
+  d.onpointerdown=e=>{e.preventDefault();play(c)};
+  $('#b').appendChild(d);
+  for(let r=0;r<R;r++){
+    const s=document.createElement('div');s.className='s';d.appendChild(s);
+    (cells[r]=cells[r]||[])[c]=s;
+  }
+}
+document.onkeydown=e=>{if(e.key>='1'&&e.key<='7')play(+e.key-1)};
+$('#rj').onclick=init;
+init();
+</script></body></html>

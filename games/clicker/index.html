@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Gem Clicker</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:linear-gradient(#141226,#0b0a14);color:#eee;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;user-select:none;touch-action:manipulation}
+h1{margin:0;color:#7de0ff;font-size:clamp(1.4rem,5vw,2rem)}
+#score{font-size:clamp(2rem,9vw,3rem);font-weight:800;color:#fff}
+#cps{color:#9aa}
+#gem{width:min(60vw,200px);aspect-ratio:1;background:linear-gradient(135deg,#9ff,#3ad 45%,#86f);clip-path:polygon(50% 0,100% 35%,80% 100%,20% 100%,0 35%);border:0;cursor:pointer;transition:transform .06s;filter:drop-shadow(0 0 18px #4cf)}
+#gem:active,#gem.p{transform:scale(.92)}
+.shop{display:flex;flex-direction:column;gap:8px;width:min(92vw,420px)}
+.shop button{display:flex;justify-content:space-between;align-items:center;background:#221f3a;color:#eee;border:1px solid #3d3868;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;text-align:left}
+.shop button:disabled{opacity:.45;cursor:not-allowed}
+.shop small{display:block;color:#9aa}
+.reset{background:none;border:1px solid #633;color:#c88;border-radius:8px;padding:6px 14px;cursor:pointer}
+.fl{position:fixed;pointer-events:none;color:#7de0ff;font-weight:700;animation:up .8s forwards}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+</style></head><body>
+<h1>💎 Gem Clicker</h1>
+<div id="score">0</div><div id="cps"></div>
+<button id="gem" aria-label="Gemme"></button>
+<div class="shop" id="shop"></div>
+<button class="reset" id="reset">Rejouer (réinitialiser)</button>
+<script>
+const K='pz_clicker_save';
+const UP=[
+ {n:'Pioche renforcée',d:'+1 par clic',base:15,g:1.18,type:'c',v:1},
+ {n:'Gants de mineur',d:'+5 par clic',base:300,g:1.2,type:'c',v:5},
+ {n:'Apprenti mineur',d:'+1 gemme/sec',base:50,g:1.15,type:'a',v:1},
+ {n:'Foreuse',d:'+8 gemmes/sec',base:600,g:1.17,type:'a',v:8},
+ {n:'Mine géante',d:'+50 gemmes/sec',base:5000,g:1.19,type:'a',v:50}
+];
+let S={pts:0,own:UP.map(()=>0),t:Date.now()};
+try{const d=JSON.parse(localStorage.getItem(K));if(d&&Array.isArray(d.own)&&d.own.length===UP.length&&isFinite(d.pts))S=d}catch(e){}
+const $=id=>document.getElementById(id);
+const cost=i=>Math.floor(UP[i].base*Math.pow(UP[i].g,S.own[i]));
+const per=t=>UP.reduce((a,u,i)=>a+(u.type===t?u.v*S.own[i]:0),0);
+const perClick=()=>1+per('c'),perSec=()=>per('a');
+const fmt=n=>n>=1e6?(n/1e6).toFixed(2)+' M':Math.floor(n).toLocaleString('fr-FR');
+const shop=$('shop'),btns=UP.map((u,i)=>{
+  const b=document.createElement('button');
+  b.onclick=()=>{const c=cost(i);if(S.pts>=c){S.pts-=c;S.own[i]++;save();draw()}};
+  shop.appendChild(b);return b});
+function draw(){
+  $('score').textContent=fmt(S.pts);
+  $('cps').textContent=perClick()+' par clic · '+perSec()+' par seconde';
+  btns.forEach((b,i)=>{b.disabled=S.pts<cost(i);
+    b.innerHTML='<span>'+UP[i].n+' (x'+S.own[i]+')<small>'+UP[i].d+'</small></span><b>'+fmt(cost(i))+' 💎</b>'});
+}
+function save(){try{S.t=Date.now();localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+$('gem').addEventListener('pointerdown',e=>{
+  S.pts+=perClick();draw();
+  const f=document.createElement('div');f.className='fl';f.textContent='+'+perClick();
+  f.style.left=(e.clientX-10)+'px';f.style.top=(e.clientY-20)+'px';
+  document.body.appendChild(f);setTimeout(()=>f.remove(),800);
+});
+$('gem').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();S.pts+=perClick();draw()}});
+let last=performance.now();
+setInterval(()=>{const n=performance.now(),dt=(n-last)/1000;last=n;S.pts+=perSec()*dt;draw()},100);
+setInterval(save,2000);
+addEventListener('beforeunload',save);
+$('reset').onclick=()=>{if(confirm('Tout réinitialiser ?')){S={pts:0,own:UP.map(()=>0),t:Date.now()};save();draw()}};
+draw();
+</script></body></html>
