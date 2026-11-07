@@ -2538,5 +2538,21 @@
       "emoji": "⏱️",
       "bg": "linear-gradient(135deg,#f97316,#7c2d12)"
     }
+  },
+  {
+    "id": "123movies",
+    "title": "123 Movies",
+    "category": "movies",
+    "tags": [
+      "movies",
+      "tv"
+    ],
+    "url": "games/123movies/index.html",
+    "popular": true,
+    "new": true,
+    "thumb": {
+      "emoji": "🎥",
+      "bg": "linear-gradient(135deg,#22c55e,#15803d)"
+    }
   }
 ]
