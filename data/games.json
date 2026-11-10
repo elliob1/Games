@@ -2553,6 +2553,57 @@
     "thumb": {
       "emoji": "🎥",
       "bg": "linear-gradient(135deg,#22c55e,#15803d)"
+     }
+   },
+   {
+    "id": "tables-de-soustraction",
+    "title": "Tables de Soustraction",
+    "category": "educational",
+    "tags": [
+      "maths",
+      "calcul",
+      "apprentissage"
+    ],
+    "url": "games/tables-de-soustraction/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "➖",
+      "bg": "linear-gradient(135deg,#ef4444,#991b1b)"
     }
+  },
+  {
+    "id": "tables-d-addition",
+    "title": "Tables d'Addition",
+    "category": "educational",
+    "tags": [
+      "maths",
+      "calcul",
+      "apprentissage"
+    ],
+    "url": "games/tables-d-addition/index.html",
+    "popular": false,
+    "new": true,
+    "thumb": {
+      "emoji": "➕",
+      "bg": "linear-gradient(135deg,#3b82f6,#1e3a8a)"
+    }
+  },
+  {
+    "id": "geoguesser",
+    "title": "GeoGuesser",
+    "category": "arcade",
+    "tags": [
+     "geographie",
+     "exploration",
+     "monde"
+    ],
+    "url": "games/geoguesser/index.html",
+    "popular": true,
+    "new": false,
+    "thumb": {
+     "emoji": "🌍",
+     "bg": "linear-gradient(135deg,#0ea5e9,#0369a1)"
+     } 
   }
 ]
